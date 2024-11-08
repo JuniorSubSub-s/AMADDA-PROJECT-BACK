@@ -1,8 +1,8 @@
-package amaddaback.amadda.finmapjpa.service;
+package amadda_back.amadda_back.finmapjpa.service;
 
 
-import amaddaback.amadda.finmapjpa.dao.RestaurantDAO;
-import amaddaback.amadda.finmapjpa.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

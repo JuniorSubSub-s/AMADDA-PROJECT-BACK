@@ -1,4 +1,4 @@
-package amaddaback.amadda.finmapjpa.domain.entity;
+package amadda_back.amadda_back.finmapjpa.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 

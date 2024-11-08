@@ -1,7 +1,7 @@
-package amaddaback.amadda.finmapjpa.dao;
+package amadda_back.amadda_back.finmapjpa.dao;
 
 
-import amaddaback.amadda.finmapjpa.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

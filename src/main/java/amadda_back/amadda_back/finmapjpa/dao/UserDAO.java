@@ -1,4 +1,4 @@
-package amaddaback.amadda.finmapjpa.dao;
+package amadda_back.amadda_back.finmapjpa.dao;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import amaddaback.amadda.finmapjpa.domain.entity.UserRequestDTO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.UserRequestDTO;
 
 
 @Repository

@@ -1,9 +1,9 @@
-package amaddaback.amadda.finmapjpa.ctrl;
+package amadda_back.amadda_back.finmapjpa.ctrl;
 
-import amaddaback.amadda.finmapjpa.domain.entity.PostResponseDTO;
-import amaddaback.amadda.finmapjpa.domain.entity.RestaurantEntity;
-import amaddaback.amadda.finmapjpa.service.PostService;
-import amaddaback.amadda.finmapjpa.service.RestaurantService;
+import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.finmapjpa.service.PostService;
+import amadda_back.amadda_back.finmapjpa.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
-package amaddaback.amadda.finmapjpa.service;
+package amadda_back.amadda_back.finmapjpa.service;
 
 
-import amaddaback.amadda.finmapjpa.dao.PostDAO;
-import amaddaback.amadda.finmapjpa.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.finmapjpa.dao.PostDAO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

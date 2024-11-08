@@ -1,4 +1,4 @@
-package amaddaback.amadda.finmapjpa.dao;
+package amadda_back.amadda_back.finmapjpa.dao;
 
 
 
@@ -6,7 +6,7 @@ package amaddaback.amadda.finmapjpa.dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import amaddaback.amadda.finmapjpa.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseDTO;
 
 import java.util.List;
 
