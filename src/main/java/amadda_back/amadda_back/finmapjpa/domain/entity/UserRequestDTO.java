@@ -1,4 +1,5 @@
-package amaddaback.amadda.finmapjpa.domain.entity;
+package amadda_back.amadda_back.finmapjpa.domain.entity;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
