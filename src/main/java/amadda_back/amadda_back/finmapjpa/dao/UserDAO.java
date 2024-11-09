@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import amadda_back.amadda_back.finmapjpa.domain.entity.UserRequestDTO;
+import amadda_back.amadda_back.View.domain.entity.UserEntity;
 
 
 @Repository
-public interface UserDAO extends JpaRepository<UserRequestDTO, Integer> {
+public interface UserDAO extends JpaRepository<UserEntity, Integer> {
 
     @Transactional
     @Modifying

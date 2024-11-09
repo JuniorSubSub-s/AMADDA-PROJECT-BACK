@@ -1,72 +1,23 @@
 package amadda_back.amadda_back.View.domain.entity;
 
 import java.time.LocalDateTime;
-
-import org.hibernate.annotations.DynamicUpdate;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.Data;
 
-@Table(name = "post")
 @Data
-@Entity
-@DynamicUpdate
 public class PostResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
     private Integer postId;
-
-    @Column(name = "post_title")
     private String postTitle;
-
-    @Column(name = "post_content")
     private String postContent;
-
-    @Column(name = "post_date")
-    private LocalDateTime postDate = LocalDateTime.now();
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "privacy")
+    private LocalDateTime postDate;
     private Privacy privacy;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "food_category")
     private FoodCategory foodCategory;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "mood")
     private Mood mood;
-
-    @Column(name = "weather")
     private String weather;
-
-    @Column(name = "receipt_verification")
-    private Boolean receiptVerification = false;
-
-    @Column(name = "daily_views")
-    private Integer dailyViews = 0;
-
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    private Boolean receiptVerification;
+    private Integer dailyViews;
     private RestaurantEntity restaurant;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
     private UserEntity user;
-
-    @ManyToOne
-    @JoinColumn(name = "theme_id")
     private ThemeEntity theme;
 
     public enum Privacy {
@@ -81,4 +32,76 @@ public class PostResponseDTO {
         평온, 행복, 사랑, 호기심, 스트레스, 귀찮음
     }
 
+    // PostEntity로부터 PostResponseDTO를 생성하는 생성자 추가
+    public PostResponseDTO(PostEntity entity) {
+        this.postId = entity.getPostId();
+        this.postTitle = entity.getPostTitle();
+        this.postContent = entity.getPostContent();
+        this.postDate = entity.getPostDate();
+        this.privacy = mapPrivacy(entity.getPrivacy());
+        this.foodCategory = mapFoodCategory(entity.getFoodCategory());
+        this.mood = mapMood(entity.getMood());
+        this.weather = entity.getWeather();
+        this.receiptVerification = entity.getReceiptVerification();
+        this.dailyViews = entity.getDailyViews();
+        this.restaurant = entity.getRestaurant();
+        this.user = entity.getUser();
+        this.theme = entity.getTheme();
+    }
+
+    // PostEntity의 Privacy 값을 PostResponseDTO의 Privacy 값으로 변환
+    private Privacy mapPrivacy(PostEntity.Privacy entityPrivacy) {
+        switch (entityPrivacy) {
+            case PUBLIC:
+                return Privacy.PUBLIC;
+            case PRIVATE:
+                return Privacy.PRIVATE;
+            case ONLY_ME:
+                return Privacy.ONLY_ME;
+            default:
+                return Privacy.PRIVATE; // 기본값 설정
+        }
+    }
+
+    // PostEntity의 FoodCategory 값을 PostResponseDTO의 FoodCategory 값으로 변환
+    private FoodCategory mapFoodCategory(PostEntity.FoodCategory entityFoodCategory) {
+        switch (entityFoodCategory) {
+            case 한식:
+                return FoodCategory.한식;
+            case 중식:
+                return FoodCategory.중식;
+            case 양식:
+                return FoodCategory.양식;
+            case 일식:
+                return FoodCategory.일식;
+            case 아시아요리:
+                return FoodCategory.아시아요리;
+            case 패스트푸드:
+                return FoodCategory.패스트푸드;
+            case 디저트:
+                return FoodCategory.디저트;
+            default:
+                return FoodCategory.한식; // 기본값 설정
+        }
+    }
+
+    // PostEntity의 Mood 값을 PostResponseDTO의 Mood 값으로 변환
+    private Mood mapMood(PostEntity.Mood entityMood) {
+        switch (entityMood) {
+            case 평온:
+                return Mood.평온;
+            case 행복:
+                return Mood.행복;
+            case 사랑:
+                return Mood.사랑;
+            case 호기심:
+                return Mood.호기심;
+            case 스트레스:
+                return Mood.스트레스;
+            case 귀찮음:
+                return Mood.귀찮음;
+            default:
+                return Mood.평온; // 기본값 설정
+        }
+    }
 }

@@ -2,7 +2,7 @@ package amadda_back.amadda_back.finmapjpa.service;
 
 
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
-import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

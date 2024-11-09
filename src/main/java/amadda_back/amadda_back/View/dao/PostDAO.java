@@ -8,31 +8,30 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
-import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 
 @Repository
-public interface PostDAO extends JpaRepository<PostResponseDTO, Integer> {
+public interface PostDAO extends JpaRepository<PostEntity, Integer> {
 
-    @Query("SELECT p FROM PostResponseDTO p WHERE p.weather = :weather")
-    List<PostResponseDTO> findPostsByWeather(@Param("weather") String weather);
+    @Query("SELECT p FROM PostEntity p WHERE p.weather = :weather")
+    List<PostEntity> findPostsByWeather(@Param("weather") String weather);
 
-    @Query("SELECT p FROM PostResponseDTO p WHERE p.mood = :mood")
-    List<PostResponseDTO> findPostsByMood(@Param("mood") PostResponseDTO.Mood mood);
+    @Query("SELECT p FROM PostEntity p WHERE p.mood = :mood")
+    List<PostEntity> findPostsByMood(@Param("mood") PostEntity.Mood mood);
 
-    @Query("SELECT p FROM PostResponseDTO p WHERE p.privacy = :privacy")
-    List<PostResponseDTO> findPostsByPrivacy(@Param("privacy") PostResponseDTO.Privacy privacy);
+    @Query("SELECT p FROM PostEntity p WHERE p.privacy = :privacy")
+    List<PostEntity> findPostsByPrivacy(@Param("privacy") PostEntity.Privacy privacy);
 
-    @Query("SELECT p FROM PostResponseDTO p JOIN p.restaurant r WHERE r.totalPost >= :minPosts")
-    List<PostResponseDTO> findPostsByColor(@Param("minPosts") int minPosts);
+    @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.totalPost >= :minPosts")
+    List<PostEntity> findPostsByColor(@Param("minPosts") int minPosts);
 
-    @Query("SELECT p FROM PostResponseDTO p JOIN p.restaurant r WHERE r.totalPost < 50")
-    List<PostResponseDTO> findPostsByLessThan50();
+    @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.totalPost < 50")
+    List<PostEntity> findPostsByLessThan50();
 
-    @Query("SELECT p FROM PostResponseDTO p JOIN p.restaurant r WHERE r.restaurantName LIKE %:searchText%")
-    List<PostResponseDTO> findByRestaurantName(@Param("searchText") String searchText);
+    @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.restaurantName LIKE %:searchText%")
+    List<PostEntity> findByRestaurantName(@Param("searchText") String searchText);
 
-    @Query("SELECT p FROM TagEntity t JOIN PostResponseDTO p ON t.post.postId = p.postId WHERE t.tagName = :searchText")
-    List<PostResponseDTO> findByTagTagName(@Param("searchText") String searchText);
+    @Query("SELECT p FROM TagEntity t JOIN PostEntity p ON t.post.postId = p.postId WHERE t.tagName = :searchText")
+    List<PostEntity> findByTagTagName(@Param("searchText") String searchText);
 
     @Query("SELECT DISTINCT p FROM TagEntity t JOIN t.post p WHERE t.tagName IN :tagNames")
     List<PostEntity> findPostsByTagNames(@Param("tagNames") List<String> tagNames);
@@ -40,16 +39,17 @@ public interface PostDAO extends JpaRepository<PostResponseDTO, Integer> {
     @Query("SELECT DISTINCT p FROM TopicEntity t JOIN t.post p WHERE t.topicName IN :topicNames")
     List<PostEntity> findPostsByTopicNames(@Param("topicNames") List<String> topicNames);
 
-    List<PostResponseDTO> findByMoodIn(List<String> moods);
+    List<PostEntity> findByMoodIn(List<String> moods);
 
-    @Query("SELECT p FROM PostResponseDTO p WHERE p.postId IN :postIds")
-    List<PostResponseDTO> getPostsByIds(@Param("postIds") List<Integer> postIds);
+    @Query("SELECT p FROM PostEntity p WHERE p.postId IN :postIds")
+    List<PostEntity> getPostsByIds(@Param("postIds") List<Integer> postIds);
 
-    List<PostResponseDTO> findAllByOrderByPostDateAsc();
+    List<PostEntity> findAllByOrderByPostDateAsc();
 
-    List<PostResponseDTO> findByReceiptVerification(Boolean receiptVerification);
+    List<PostEntity> findByReceiptVerification(Boolean receiptVerification);
 
-    @Query("SELECT p FROM PostResponseDTO p ORDER BY p.dailyViews DESC")
-    List<PostResponseDTO> findAllOrderByDailyViewsDesc();
+    @Query("SELECT p FROM PostEntity p ORDER BY p.dailyViews DESC")
+    List<PostEntity> findAllOrderByDailyViewsDesc();
 
 }
+

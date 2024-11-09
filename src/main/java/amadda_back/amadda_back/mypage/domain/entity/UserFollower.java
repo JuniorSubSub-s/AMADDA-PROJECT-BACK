@@ -1,11 +1,12 @@
 package amadda_back.amadda_back.mypage.domain.entity;
 
+import amadda_back.amadda_back.View.domain.entity.UserEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_follower")
 public class UserFollower {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")
@@ -18,13 +19,13 @@ public class UserFollower {
     private int followerUserId; // 팔로워 사용자 ID
 
     // User와의 관계 매핑
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    private User user; // 팔로잉하는 사용자
+    private UserEntity user; // 팔로잉하는 사용자
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    private User followerUser; // 팔로워 사용자
+    private UserEntity followerUser; // 팔로워 사용자
 
     // 기본 생성자
     public UserFollower() {
@@ -61,19 +62,19 @@ public class UserFollower {
         this.followerUserId = followerUserId;
     }
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
-    public User getFollowerUser() {
+    public UserEntity getFollowerUser() {
         return followerUser;
     }
 
-    public void setFollowerUser(User followerUser) {
+    public void setFollowerUser(UserEntity followerUser) {
         this.followerUser = followerUser;
     }
 }

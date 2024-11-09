@@ -1,43 +1,42 @@
 package amadda_back.amadda_back.mypage.domain.entity;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+import amadda_back.amadda_back.View.domain.entity.UserEntity;
 
 public class UserInfoDTO {
-    private int userId;                
-    private String name;                // userName과 매칭
+
+    private Integer userId;
+    private String name;
     private String introduceText;
-    private String nickname;      
-    private String phoneNumber;        
-    private String email;              
-    private LocalDateTime birthDate;   
-    private User.Gender gender;        
-    private int currencyBalance;       
-    private User.Subscription subscription; 
+    private String nickname;
+    private String phoneNumber;
+    private String email;
     private String profileImage;
-    private int followingCount; // 추가된 필드
-    private int followerCount; // 추가된 필드
+    private LocalDate birthDate;
+    private UserEntity.Gender gender;
+    private Integer currencyBalance;
+    private UserEntity.Subscription subscription;
+    private Integer followingCount;
+    private Integer followerCount;
 
-
-    // 기본 생성자
-    public UserInfoDTO() {}
-
-    // 모든 필드를 초기화하는 생성자
-    public UserInfoDTO(int userId, String name, String introduceText, String nickname, String phoneNumber, String email, String profileImage, 
-                       LocalDateTime birthDate, User.Gender gender, int currencyBalance, 
-                       User.Subscription subscription,  int followingCount, int followerCount) {
+    // 생성자
+    public UserInfoDTO(Integer userId, String name, String introduceText, String nickname, String phoneNumber,
+            String email, String profileImage, LocalDate birthDate, UserEntity.Gender gender,
+            Integer currencyBalance, UserEntity.Subscription subscription, Integer followingCount, Integer followerCount) {
         this.userId = userId;
-        this.name = name; // userName
+        this.name = name;
         this.introduceText = introduceText;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.profileImage = profileImage;
-        this.birthDate = birthDate; 
+        this.birthDate = birthDate;
         this.gender = gender;
         this.currencyBalance = currencyBalance;
         this.subscription = subscription;
-        this.followingCount = followingCount; 
-        this.followerCount = followerCount; 
+        this.followingCount = followingCount;
+        this.followerCount = followerCount;
     }
 
     // Getters
@@ -65,36 +64,34 @@ public class UserInfoDTO {
         return email;
     }
 
-    public LocalDateTime getBirthDate() {
-        return birthDate; 
+    public LocalDate getBirthDate() {
+        return birthDate; // LocalDateTime 반환
     }
 
-    public User.Gender getGender() {
-        return gender;
+    public UserEntity.Gender getGender() {
+        return gender; // UserEntity.Gender 반환
     }
 
     public int getCurrencyBalance() {
         return currencyBalance;
     }
 
-    public User.Subscription getSubscription() {
-        return subscription;
+    public UserEntity.Subscription getSubscription() {
+        return subscription; // UserEntity.Subscription 반환
     }
 
     public String getProfileImage() {
         return profileImage;
     }
 
-    public int getFollowingCount() { // 추가된 필드의 Getter
+    public Integer getFollowingCount() {
         return followingCount;
     }
 
-    public int getFollowerCount() { // 추가된 필드의 Getter
+    public Integer getFollowerCount() {
         return followerCount;
     }
 
-
-    // Setters
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -119,32 +116,40 @@ public class UserInfoDTO {
         this.email = email;
     }
 
-    public void setBirthDate(LocalDateTime birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public void setGender(User.Gender gender) {
-        this.gender = gender;
+    public void setGender(UserEntity.Gender gender) {
+        this.gender = gender; // UserEntity.Gender 설정
     }
 
     public void setCurrencyBalance(int currencyBalance) {
         this.currencyBalance = currencyBalance;
     }
 
-    public void setSubscription(User.Subscription subscription) {
-        this.subscription = subscription;
+    public void setSubscription(UserEntity.Subscription subscription) {
+        this.subscription = subscription; // UserEntity.Subscription 설정
     }
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
 
-    public void setFollowingCount(int followingCount) { // 추가된 필드의 Setter
+    public void setFollowingCount(Integer followingCount) {
         this.followingCount = followingCount;
     }
 
-    public void setFollowerCount(int followerCount) { // 추가된 필드의 Setter
+    public void setFollowerCount(Integer followerCount) {
         this.followerCount = followerCount;
     }
+    
+    // 내부 클래스 Gender 및 Subscription 정의
+    public enum Gender {
+        M, F
+    }
 
+    public enum Subscription {
+        Y, N
+    }
 }

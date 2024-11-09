@@ -1,13 +1,12 @@
 package amadda_back.amadda_back.mypage.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.mypage.dao.UserRepository;
-import amadda_back.amadda_back.mypage.domain.entity.User;
+import amadda_back.amadda_back.View.domain.entity.UserEntity;
 import amadda_back.amadda_back.mypage.domain.entity.UserInfoDTO;
 import amadda_back.amadda_back.mypage.exception.ResourceNotFoundException;
-
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService {
@@ -21,10 +20,12 @@ public class UserService {
         this.fileService = fileService;
     }
 
+    // 사용자 정보 조회
     public UserInfoDTO getUserInfo(int userId) {
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         
+        // 팔로잉, 팔로워 수 조회
         int followingCount = userRepository.countFollowingByUserId(userId);
         int followerCount = userRepository.countFollowerByUserId(userId);
 
@@ -45,22 +46,24 @@ public class UserService {
         );
     }
 
+    // 사용자 통화 잔액 조회
     public int getUserCurrencyBalance(int userId) {
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         return user.getUserCurrencyBalance();
     }
 
+    // 사용자 통화 잔액 업데이트
     public void setUserCurrencyBalance(int userId, int userCurrencyBalance) {
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         user.setUserCurrencyBalance(userCurrencyBalance);
         userRepository.save(user);
     }
 
-    // 사용자 정보를 업데이트하는 메서드 추가
+    // 사용자 정보 업데이트
     public UserInfoDTO updateUserInfo(int userId, UserInfoDTO userInfoDTO) {
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         
         user.setUserNickname(userInfoDTO.getNickname());
@@ -92,7 +95,7 @@ public class UserService {
 
     // 프로필 이미지를 업데이트하는 메서드 추가
     public void updateProfileImage(int userId, String profileImage) {
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         
         user.setProfileImage(profileImage); // 프로필 이미지 업데이트
@@ -105,7 +108,7 @@ public class UserService {
         String filePath = fileService.saveFile(file);
 
         // 파일 경로를 사용자 프로필 이미지에 저장
-        User user = userRepository.findById(userId)
+        UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         
         user.setProfileImage(filePath); // 저장된 파일 경로를 프로필 이미지로 설정

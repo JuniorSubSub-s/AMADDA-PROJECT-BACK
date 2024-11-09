@@ -1,11 +1,10 @@
 package amadda_back.amadda_back.finmapjpa.ctrl;
 
-import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseDTO;
-import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantEntity;
-import amadda_back.amadda_back.finmapjpa.service.PostService;
+import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.View.service.PostService;
 import amadda_back.amadda_back.finmapjpa.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
     private final RestaurantService restaurantService;
-    @Autowired
-    private final PostService postService;
+    private final PostService PostService;
 
     // 모든 레스토랑을 가져오는 API
     @GetMapping("/restaurants")
@@ -45,7 +42,7 @@ public class PostController {
     // 특정 레스토랑의 포스트 정보를 가져오는 API
     @GetMapping("/restaurants/{restaurantId}/posts")
     public ResponseEntity<List<PostResponseDTO>> getPostsByRestaurantId(@PathVariable Integer restaurantId) {
-        List<PostResponseDTO> posts = postService.getPostsByRestaurantId(restaurantId);
+        List<PostResponseDTO> posts = PostService.getPostsByRestaurantId(restaurantId);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 }
