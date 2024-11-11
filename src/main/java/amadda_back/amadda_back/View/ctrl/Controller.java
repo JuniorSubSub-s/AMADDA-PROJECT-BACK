@@ -36,7 +36,7 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(null);
+                    .body(null);
         }
     }
 
@@ -101,7 +101,7 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(null);
+                    .body(null);
         }
     }
 
@@ -122,5 +122,10 @@ public class Controller {
         List<PostResponseDTO> posts = postService.getPostsSortedByDailyViews();
         return ResponseEntity.ok(posts);
     }
-}
 
+    @GetMapping("/tags")
+    public ResponseEntity<List<String>> getTagsByPostId(@RequestParam Integer postId) {
+        List<String> tagNames = postService.getTagsByPostId(postId);
+        return ResponseEntity.ok(tagNames);
+    }
+}

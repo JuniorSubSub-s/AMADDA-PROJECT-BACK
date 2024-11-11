@@ -1,16 +1,20 @@
 package amadda_back.amadda_back.View.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
-import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
+import amadda_back.amadda_back.View.dao.TagDAO;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 
 @Service
 public class PostService {
@@ -24,13 +28,16 @@ public class PostService {
     @Autowired
     private FoodImageDAO foodImageDAO;
 
+    @Autowired
+    private TagDAO tagDAO;
+
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
-    List<PostEntity> postEntities = finmapPostDAO.findByRestaurant_RestaurantId(restaurantId);
-    return postEntities.stream()
-                        .map(PostResponseDTO::new) // PostEntity -> PostResponseDTO 변환
-                        .collect(Collectors.toList());
-}
+        List<PostEntity> postEntities = finmapPostDAO.findByRestaurant_RestaurantId(restaurantId);
+        return postEntities.stream()
+                .map(PostResponseDTO::new) // PostEntity -> PostResponseDTO 변환
+                .collect(Collectors.toList());
+    }
 
     public List<PostResponseDTO> getPostsByWeather(String weather) {
         List<PostEntity> postEntities = postDAO.findPostsByWeather(weather);
@@ -72,12 +79,18 @@ public class PostService {
 
     private int getMinPostsByColor(String color) {
         switch (color) {
-            case "Purple": return 400;
-            case "Yellow": return 300;
-            case "Blue": return 200;
-            case "Orange": return 100;
-            case "Red": return 50;
-            default: return 0;
+            case "Purple":
+                return 400;
+            case "Yellow":
+                return 300;
+            case "Blue":
+                return 200;
+            case "Orange":
+                return 100;
+            case "Red":
+                return 50;
+            default:
+                return 0;
         }
     }
 
@@ -117,7 +130,7 @@ public class PostService {
     public Map<Integer, String> getFirstFoodImagesByPostIds(List<Integer> postIds) {
         List<String> imageUrls = foodImageDAO.findFoodImagesByPostIds(postIds);
         Map<Integer, String> postImageMap = new HashMap<>();
-        
+
         for (int i = 0; i < postIds.size(); i++) {
             postImageMap.put(postIds.get(i), imageUrls.size() > i ? imageUrls.get(i) : "Image not found");
         }
@@ -138,4 +151,9 @@ public class PostService {
         }
         return postResponseDTOs;
     }
+
+    public List<String> getTagsByPostId(Integer postId) {
+        return tagDAO.findTagNamesByPostId(postId);
+    }
+
 }
