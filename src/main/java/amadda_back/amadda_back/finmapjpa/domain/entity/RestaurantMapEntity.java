@@ -1,4 +1,4 @@
-package amaddaback.amadda.finmapjpa.domain.entity;
+package amadda_back.amadda_back.finmapjpa.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -9,12 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
-
 @Table(name = "restaurant")
 @Data
 @Entity
 @DynamicUpdate
-public class RestaurantEntity {
+public class RestaurantMapEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

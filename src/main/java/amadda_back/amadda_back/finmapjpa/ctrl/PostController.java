@@ -1,9 +1,6 @@
-package amaddaback.amadda.finmapjpa.ctrl;
+package amadda_back.amadda_back.finmapjpa.ctrl;
 
-import amaddaback.amadda.finmapjpa.domain.entity.PostResponseDTO;
-import amaddaback.amadda.finmapjpa.domain.entity.RestaurantEntity;
-import amaddaback.amadda.finmapjpa.service.PostService;
-import amaddaback.amadda.finmapjpa.service.RestaurantService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseMapDTO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantMapEntity;
+import amadda_back.amadda_back.finmapjpa.service.PostMapService;
+import amadda_back.amadda_back.finmapjpa.service.RestaurantMapService;
+
 import java.util.List;
 
 @RestController
@@ -21,31 +23,31 @@ import java.util.List;
 public class PostController {
 
     @Autowired
-    private final RestaurantService restaurantService;
+    private final RestaurantMapService restaurantMapService;
     @Autowired
-    private final PostService postService;
+    private final PostMapService postMapService;
 
     // 모든 레스토랑을 가져오는 API
     @GetMapping("/restaurants")
-    public ResponseEntity<List<RestaurantEntity>> getAllRestaurants() {
-        List<RestaurantEntity> result = restaurantService.getAllRestaurants();
+    public ResponseEntity<List<RestaurantMapEntity>> getAllRestaurants() {
+        List<RestaurantMapEntity> result = restaurantMapService.getAllRestaurants();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // 레스토랑의 total_post에 맞는 핀 색상을 가져오는 API
     @GetMapping("/restaurants/pins")
     public ResponseEntity<List<String>> getPinColors() {
-        List<RestaurantEntity> restaurants = restaurantService.getAllRestaurants();
+        List<RestaurantMapEntity> restaurants = restaurantMapService.getAllRestaurants();
         List<String> pinColors = restaurants.stream()
-                                            .map(restaurant -> restaurantService.getPinColorByPostCount(restaurant.getTotalPost()))
+                                            .map(restaurant -> restaurantMapService.getPinColorByPostCount(restaurant.getTotalPost()))
                                             .toList();
         return new ResponseEntity<>(pinColors, HttpStatus.OK);
     }
 
-    // 특정 레스토랑의 포스트 정보를 가져오는 API
-    @GetMapping("/restaurants/{restaurantId}/posts")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByRestaurantId(@PathVariable Integer restaurantId) {
-        List<PostResponseDTO> posts = postService.getPostsByRestaurantId(restaurantId);
-        return new ResponseEntity<>(posts, HttpStatus.OK);
-    }
+     // 특정 레스토랑의 포스트 정보를 가져오는 API
+     @GetMapping("/restaurants/{restaurantId}/posts")
+     public ResponseEntity<List<PostResponseMapDTO>> getPostsByRestaurantId(@PathVariable("restaurantId") Integer restaurantId) {
+         List<PostResponseMapDTO> posts = postMapService.getPostsByRestaurantId(restaurantId);
+         return new ResponseEntity<>(posts, HttpStatus.OK);
+     }
 }

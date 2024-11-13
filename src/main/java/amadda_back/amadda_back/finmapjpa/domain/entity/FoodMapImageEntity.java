@@ -1,4 +1,4 @@
-package amaddaback.amadda.finmapjpa.domain.entity;
+package amadda_back.amadda_back.finmapjpa.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -17,7 +17,7 @@ import lombok.Data;
 @Entity(name = "food_image")
 @Data
 @DynamicUpdate
-public class FoodImageEntity {
+public class FoodMapImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,10 @@ public class FoodImageEntity {
     @Column(name = "food_image_url", nullable = false)
     private String foodImageUrl; // 음식 이미지 URL
 
-    @Column(name = "post_id")
-    private Long post; // 해당 음식 이미지를 가진 게시물 (PostResponseDTO)
+    @ManyToOne
+    @JoinColumn(name = "post_id")  // 외래키 설정
+    private PostResponseMapDTO post;  // PostEntity와 연결된 필드
+
 
 }
+
