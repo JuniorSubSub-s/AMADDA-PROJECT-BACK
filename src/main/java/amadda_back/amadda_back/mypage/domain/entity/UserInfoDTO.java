@@ -19,11 +19,13 @@ public class UserInfoDTO {
     private UserEntity.Subscription subscription;
     private Integer followingCount;
     private Integer followerCount;
+    private Integer badgeCount; // 유저가 받은 뱃지 수 추가
 
     // 생성자
     public UserInfoDTO(Integer userId, String name, String introduceText, String nickname, String phoneNumber,
             String email, String profileImage, LocalDate birthDate, UserEntity.Gender gender,
-            Integer currencyBalance, UserEntity.Subscription subscription, Integer followingCount, Integer followerCount) {
+            Integer currencyBalance, UserEntity.Subscription subscription, Integer followingCount, Integer followerCount,
+            Integer badgeCount) {  // badgeCount 추가
         this.userId = userId;
         this.name = name;
         this.introduceText = introduceText;
@@ -37,6 +39,7 @@ public class UserInfoDTO {
         this.subscription = subscription;
         this.followingCount = followingCount;
         this.followerCount = followerCount;
+        this.badgeCount = badgeCount;  // badgeCount 초기화
     }
 
     // Getters
@@ -92,6 +95,11 @@ public class UserInfoDTO {
         return followerCount;
     }
 
+    public Integer getBadgeCount() {
+        return badgeCount;  // 유저 뱃지 수 반환
+    }
+
+    // Setters
     public void setUserId(int userId) {
         this.userId = userId;
     }
@@ -142,6 +150,10 @@ public class UserInfoDTO {
 
     public void setFollowerCount(Integer followerCount) {
         this.followerCount = followerCount;
+    }
+
+    public void setBadgeCount(Integer badgeCount) {
+        this.badgeCount = badgeCount;  // 유저 뱃지 수 설정
     }
     
     // 내부 클래스 Gender 및 Subscription 정의

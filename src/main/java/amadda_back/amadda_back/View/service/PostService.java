@@ -156,4 +156,22 @@ public class PostService {
         return tagDAO.findTagNamesByPostId(postId);
     }
 
+    // 사용자 ID로 포스트를 가져오는 메서드
+    public List<PostResponseDTO> getPostsByUserId(Integer userId) {
+        // userId로 Post 조회
+        List<PostEntity> posts = postDAO.findByUser_UserId(userId); 
+        return posts.stream()
+                .map(PostResponseDTO::new)  // PostEntity -> PostResponseDTO 변환
+                .collect(Collectors.toList());
+    }
+
+    public boolean deletePost(Integer postId) {
+        // 게시물이 존재하는지 확인
+        if (postDAO.existsById(postId)) {
+            postDAO.deleteById(postId); // 삭제
+            return true;
+        }
+        return false; // 게시물이 존재하지 않으면 false 반환
+    }
+
 }
