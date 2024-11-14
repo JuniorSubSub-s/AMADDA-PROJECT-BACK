@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -16,12 +17,14 @@ import org.springframework.web.multipart.MultipartFile;
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
 import amadda_back.amadda_back.View.dao.TagDAO;
+import amadda_back.amadda_back.View.dao.ThemeDAO;
 import amadda_back.amadda_back.View.domain.entity.FoodImageEntity;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
+import amadda_back.amadda_back.mypage.dao.UserRepository;
 
 @Service
 public class PostService {
@@ -40,6 +43,12 @@ public class PostService {
 
     @Autowired
     private RestaurantDAO restaurantDAO;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ThemeDAO themeDAO;
 
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
@@ -64,13 +73,12 @@ public class PostService {
         return convertToPostResponseDTO(postEntities);
     }
 
-    public List<PostResponseDTO> getPostsByPrivacy(PostResponseDTO.Privacy privacy) {
-        // Privacy 타입을 PostEntity.Privacy로 변환
-        PostEntity.Privacy entityPrivacy = PostEntity.Privacy.valueOf(privacy.name());
-        List<PostEntity> postEntities = postDAO.findPostsByPrivacy(entityPrivacy);
-        return convertToPostResponseDTO(postEntities);
-    }
-
+    // public List<PostResponseDTO> getPostsByPrivacy(PostResponseDTO.Privacy privacy) {
+    //     // Privacy 타입을 PostEntity.Privacy로 변환
+    //     PostEntity.Privacy entityPrivacy = PostEntity.Privacy.valueOf(privacy.name());
+    //     List<PostEntity> postEntities = postDAO.findPostsByPrivacy(entityPrivacy);
+    //     return convertToPostResponseDTO(postEntities);
+    // }
     public List<PostResponseDTO> getPostsByColor(String color) {
         if ("Total".equals(color)) {
             List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
@@ -166,14 +174,37 @@ public class PostService {
         return tagDAO.findTagNamesByPostId(postId);
     }
 
-    // 레스토랑 중복 검사
-    public boolean checkDuplicate(String restaurantName, String restaurantAddress) {
-        return restaurantDAO.existsByRestaurantNameOrRestaurantAddress(restaurantName, restaurantAddress);
+    // 레스토랑 중복 검사 후 추가 또는 기존 레스토랑 반환
+    public RestaurantEntity addRestaurantIfNotExists(String restaurantName, String restaurantAddress, Double locationLatitude, Double locationLongitude) {
+        // 중복 레스토랑 확인
+        Optional<RestaurantEntity> existingRestaurant = restaurantDAO.findByRestaurantNameAndRestaurantAddress(restaurantName, restaurantAddress);
+
+        if (existingRestaurant.isPresent()) {
+            // 중복이 있을 경우 기존 레스토랑 반환
+            return existingRestaurant.get();
+        } else {
+            // 중복이 없을 경우 새로운 레스토랑 저장 후 반환
+            RestaurantEntity newRestaurant = new RestaurantEntity(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+            return restaurantDAO.save(newRestaurant);
+        }
     }
 
-    // 새로운 레스토랑 추가
-    public RestaurantEntity addRestaurant(RestaurantEntity restaurantEntity) {
-        return restaurantDAO.save(restaurantEntity);
+    // 게시물 저장
+    public PostEntity savePost(String title, String content, String privacy, String foodCategory, String mood,
+            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId) {
+        PostEntity post = new PostEntity();
+        post.setPostTitle(title);
+        post.setPostContent(content);
+        post.setPrivacy(privacy);
+        post.setFoodCategory(foodCategory);
+        post.setMood(mood);
+        post.setWeather(weather);
+        post.setReceiptVerification(receiptVerification);
+        // 각 엔티티를 ID로 찾아서 매핑
+        post.setRestaurant(restaurantDAO.findById(restaurantId).orElse(null));
+        post.setUser(userRepository.findById(userId).orElse(null));
+        post.setTheme(themeDAO.findById(themeId).orElse(null));
+        return postDAO.save(post);
     }
 
     // 이미지 저장

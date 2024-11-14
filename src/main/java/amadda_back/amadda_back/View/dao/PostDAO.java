@@ -22,11 +22,11 @@ public interface PostDAO extends JpaRepository<PostEntity, Integer> {
 
     // 감정에 해당하는 포스트 조회
     @Query("SELECT p FROM PostEntity p WHERE p.mood = :mood")
-    List<PostEntity> findPostsByMood(@Param("mood") PostEntity.Mood mood);
+    List<PostEntity> findPostsByMood(@Param("mood") String mood);
 
     // 프라이버시 설정에 해당하는 포스트 조회
     @Query("SELECT p FROM PostEntity p WHERE p.privacy = :privacy")
-    List<PostEntity> findPostsByPrivacy(@Param("privacy") PostEntity.Privacy privacy);
+    List<PostEntity> findPostsByPrivacy(@Param("privacy") String privacy);
 
     // 특정 레스토랑에서 포스트 색깔 기준으로 조회
     @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.totalPost >= :minPosts")

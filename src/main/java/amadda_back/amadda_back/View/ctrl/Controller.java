@@ -7,10 +7,10 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.WeatherResponseDTO;
 import amadda_back.amadda_back.View.service.OCRService;
 import amadda_back.amadda_back.View.service.PostService;
@@ -51,6 +52,7 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(postService.getPostsByUserId(userId));
     }
+
     @GetMapping("/posts/{postId}")
     public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable List<Integer> postId) {
         List<PostResponseDTO> posts = postService.getPostsByIds(postId);
@@ -73,11 +75,10 @@ public class Controller {
         return ResponseEntity.ok(postService.getPostsByMood(moods));
     }
 
-    @GetMapping("/posts/privacy")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam PostResponseDTO.Privacy privacy) {
-        return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
-    }
-
+    // @GetMapping("/posts/privacy")
+    // public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam PostResponseDTO.Privacy privacy) {
+    //     return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
+    // }
     @GetMapping("/posts/pinColor")
     public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam String color) {
         return ResponseEntity.ok(postService.getPostsByColor(color));
@@ -161,6 +162,51 @@ public class Controller {
         // 서비스로 전달하여 이미지 저장 및 경로 반환
         return postService.saveImages(images, postId);
     }
-}
 
-    
+    //레스토랑 저장
+    @PostMapping("/saveRestaurant")
+    public ResponseEntity<?> saveRestaurant(@RequestParam String restaurantName,
+            @RequestParam String restaurantAddress,
+            @RequestParam Double locationLatitude,
+            @RequestParam Double locationLongitude) {
+        try {
+            RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+            if (restaurant != null) {
+                // 레스토랑 ID 반환
+                return ResponseEntity.ok(restaurant.getRestaurantId());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("레스토랑 추가에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
+        }
+    }
+
+    //게시물 저장
+    @PostMapping("/savePost")
+    public ResponseEntity<?> savePost(@RequestBody Map<String, Object> postData) {
+        try {
+            // 프론트에서 전달한 데이터 파싱
+            String title = (String) postData.get("post_title");
+            String content = (String) postData.get("post_content");
+            String privacy = (String) postData.get("privacy");
+            String foodCategory = (String) postData.get("food_category");
+            String mood = (String) postData.get("mood");
+            String weather = (String) postData.get("weather");
+            Boolean receiptVerification = (Boolean) postData.get("receipt_verification");
+            Integer restaurantId = (Integer) postData.get("restaurant_id");
+            Integer userId = (Integer) postData.get("user_id");
+            Integer themeId = (Integer) postData.get("theme_id");
+
+            // 포스트 저장
+            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather, receiptVerification, restaurantId, userId, themeId);
+
+            return ResponseEntity.ok(savedPost.getPostId()); // 저장된 게시물의 ID 반환
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시물 저장 중 오류가 발생했습니다.");
+        }
+    }
+}

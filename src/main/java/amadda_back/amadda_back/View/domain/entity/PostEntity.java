@@ -6,8 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,17 +34,14 @@ public class PostEntity {
     @Column(name = "post_date")
     private LocalDateTime postDate = LocalDateTime.now();
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "privacy")
-    private Privacy privacy;
+    private String privacy;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "food_category")
-    private FoodCategory foodCategory;
+    private String foodCategory;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "mood")
-    private Mood mood;
+    private String mood;
 
     @Column(name = "weather")
     private String weather;
@@ -68,17 +63,5 @@ public class PostEntity {
     @ManyToOne
     @JoinColumn(name = "theme_id")
     private ThemeEntity theme;
-
-    public enum Privacy {
-        PUBLIC, PRIVATE, ONLY_ME
-    }
-
-    public enum FoodCategory {
-        한식, 중식, 양식, 일식, 아시아요리, 패스트푸드, 디저트
-    }
-
-    public enum Mood {
-        평온, 행복, 사랑, 호기심, 스트레스, 귀찮음
-    }
 
 }
