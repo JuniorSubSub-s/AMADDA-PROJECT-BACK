@@ -1,20 +1,27 @@
 package amadda_back.amadda_back.View.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
 import amadda_back.amadda_back.View.dao.TagDAO;
+import amadda_back.amadda_back.View.domain.entity.FoodImageEntity;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
+import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
 
 @Service
 public class PostService {
@@ -30,6 +37,9 @@ public class PostService {
 
     @Autowired
     private TagDAO tagDAO;
+
+    @Autowired
+    private RestaurantDAO restaurantDAO;
 
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
@@ -156,12 +166,58 @@ public class PostService {
         return tagDAO.findTagNamesByPostId(postId);
     }
 
+    // 레스토랑 중복 검사
+    public boolean checkDuplicate(String restaurantName, String restaurantAddress) {
+        return restaurantDAO.existsByRestaurantNameOrRestaurantAddress(restaurantName, restaurantAddress);
+    }
+
+    // 새로운 레스토랑 추가
+    public RestaurantEntity addRestaurant(RestaurantEntity restaurantEntity) {
+        return restaurantDAO.save(restaurantEntity);
+    }
+
+    // 이미지 저장
+    public List<String> saveImages(List<MultipartFile> images, Integer postId) {
+        List<String> imagePaths = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            String imageUrl = saveImageFile(image);
+            if (imageUrl != null) {
+                imagePaths.add(imageUrl);
+
+                // FoodImageEntity 생성 및 저장
+                FoodImageEntity foodImage = new FoodImageEntity();
+                foodImage.setFoodImageUrl(imageUrl);
+                PostEntity post = postDAO.findById(postId)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + postId));
+                foodImage.setPost(post);
+                foodImageDAO.save(foodImage);
+            }
+        }
+        return imagePaths;
+    }
+
+    private String saveImageFile(MultipartFile image) {
+        String directory = "src/main/resources/static/post/images/";
+        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+        String filePath = directory + fileName;
+
+        try {
+            File file = new File(filePath);
+            image.transferTo(file);
+            return "/post/images/" + fileName; // 클라이언트에서 접근 가능한 URL 반환
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // 사용자 ID로 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByUserId(Integer userId) {
         // userId로 Post 조회
-        List<PostEntity> posts = postDAO.findByUser_UserId(userId); 
+        List<PostEntity> posts = postDAO.findByUser_UserId(userId);
         return posts.stream()
-                .map(PostResponseDTO::new)  // PostEntity -> PostResponseDTO 변환
+                .map(PostResponseDTO::new) // PostEntity -> PostResponseDTO 변환
                 .collect(Collectors.toList());
     }
 

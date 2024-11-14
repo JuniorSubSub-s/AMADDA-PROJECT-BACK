@@ -30,4 +30,6 @@ public interface EventMapper {
 
     public void savehistoryAll(List<HistoryDaysDTO> params);
 
+    public List<EventResponseDTO> getOldestUserEvents(Map<String, Integer> map);
+
 }

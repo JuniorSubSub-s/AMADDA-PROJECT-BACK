@@ -1,6 +1,7 @@
-package amadda_back.amadda_back.View.domain.entity;
+package amadda_back.amadda_back.finmapjpa.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,11 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+
 @Table(name = "restaurant")
 @Data
 @Entity
 @DynamicUpdate
-public class RestaurantEntity {
+public class RestaurantMapEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,26 +26,11 @@ public class RestaurantEntity {
     private String restaurantName;
 
     @Column(name = "total_post")
-    private Integer totalPost = 0;
-
-    @Column(name = "restaurant_address")
-    private String restaurantAddress;
+    private Integer totalPost;
 
     @Column(name = "location_latitude")
     private Double locationLatitude;
 
     @Column(name = "location_longitude")
     private Double locationLongitude;
-
-    // 기본 생성자
-    public RestaurantEntity() {
-    }
-
-    // 사용자 정의 생성자
-    public RestaurantEntity(String restaurantName, String restaurantAddress, Double locationLatitude, Double locationLongitude) {
-        this.restaurantName = restaurantName;
-        this.restaurantAddress = restaurantAddress;
-        this.locationLatitude = locationLatitude;
-        this.locationLongitude = locationLongitude;
-    }
 }
