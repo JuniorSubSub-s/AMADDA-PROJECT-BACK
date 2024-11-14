@@ -20,7 +20,8 @@ import lombok.Data;
 
 
 @Data
-@Entity(name = "post")
+@Entity
+@Table(name = "post")
 @DynamicUpdate
 public class PostResponseMapDTO {
 
