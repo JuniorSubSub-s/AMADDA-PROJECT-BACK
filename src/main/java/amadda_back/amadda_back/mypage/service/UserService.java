@@ -28,6 +28,7 @@ public class UserService {
         // 팔로잉, 팔로워 수 조회
         int followingCount = userRepository.countFollowingByUserId(userId);
         int followerCount = userRepository.countFollowerByUserId(userId);
+        int badgeCount = userRepository.countBadgeByUserId(userId);
 
         return new UserInfoDTO(
             user.getUserId(),                
@@ -42,7 +43,8 @@ public class UserService {
             user.getUserCurrencyBalance(),
             user.getSubscription(),
             followingCount,
-            followerCount
+            followerCount,
+            badgeCount
         );
     }
 
@@ -89,7 +91,8 @@ public class UserService {
             user.getUserCurrencyBalance(),
             user.getSubscription(),
             0, // followingCount
-            0  // followerCount
+            0,  // followerCount
+            0 // badgeCount
         );
     }
 

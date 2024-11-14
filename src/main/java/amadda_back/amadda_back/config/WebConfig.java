@@ -18,9 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
      @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // 이미지 파일을 제공하기 위해 '/assets/**' 경로에 대해 GET 요청을 처리
+     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // /assets/** 경로 요청이 C:/finalproject/AMADDA-PROJECT-BACK/src/main/resources/static/img/profile/로 매핑되도록 설정
         registry.addResourceHandler("/assets/**")
-                .addResourceLocations("file:/C:/finalproject/AMADDA-PROJECT-2/assets/");  // 로컬 파일 시스템 경로로 수정
+                .addResourceLocations("file:///C:/finalproject/AMADDA-PROJECT-BACK/src/main/resources/static/img/profile/");
     }
+
+
 }

@@ -15,7 +15,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
        "u.userId, u.userName, u.introduceText, u.userNickname, u.userPhoneNumber, u.userEmail, u.profileImage, " +
        "u.birthDate, u.userGender, u.userCurrencyBalance, u.subscription, " +
        "(SELECT COUNT(f1) FROM UserFollower f1 WHERE f1.userId = u.userId), " + // 팔로잉 카운트
-       "(SELECT COUNT(f2) FROM UserFollower f2 WHERE f2.followerUserId = u.userId)) " + // 팔로워 카운트
+       "(SELECT COUNT(f2) FROM UserFollower f2 WHERE f2.followerUserId = u.userId), " + // 팔로워 카운트
+       "(SELECT COUNT(b) FROM UserBadge b WHERE b.userId = u.userId)) " + // 뱃지 카운트
        "FROM UserEntity u " + // 엔티티 이름을 UserEntity로 변경
        "WHERE u.userId = :userId")
     UserInfoDTO findUserInfoByUserId(@Param("userId") int userId);
@@ -25,4 +26,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     @Query("SELECT COUNT(f) FROM UserFollower f WHERE f.followerUserId = :userId")
     int countFollowerByUserId(@Param("userId") int userId);
+
+    @Query("SELECT COUNT(b) FROM UserBadge b WHERE b.userId = :userId")
+    int countBadgeByUserId(@Param("userId") int userId); // 뱃지 수 카운트 쿼리 추가
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,103 +36,98 @@ public class Controller {
 
     @GetMapping("/postsByWeather")
     public ResponseEntity<List<PostResponseDTO>> getPostsByWeather(@RequestParam String weather) {
-        try {
-            List<PostResponseDTO> posts = postService.getPostsByWeather(weather);
-            return ResponseEntity.ok(posts);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+        return ResponseEntity.ok(postService.getPostsByWeather(weather));
     }
 
     @GetMapping("/posts/{postId}")
     public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable List<Integer> postId) {
-        List<PostResponseDTO> posts = postService.getPostsByIds(postId);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsByIds(postId));
+    }
+
+    // 포스트 삭제 처리
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+        boolean deleted = postService.deletePost(postId);
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
+        } else {
+            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
+        }
+    }
+
+    @GetMapping("/posts/user/{userId}")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByUserId(@PathVariable Integer userId) {
+        return ResponseEntity.ok(postService.getPostsByUserId(userId));
     }
 
     @GetMapping("/posts/mood")
     public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam List<String> moods) {
-        List<PostResponseDTO> posts = postService.getPostsByMood(moods);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsByMood(moods));
     }
 
     @GetMapping("/posts/privacy")
     public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam PostResponseDTO.Privacy privacy) {
-        List<PostResponseDTO> posts = postService.getPostsByPrivacy(privacy);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
     }
 
     @GetMapping("/posts/pinColor")
     public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam String color) {
-        List<PostResponseDTO> posts = postService.getPostsByColor(color);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsByColor(color));
     }
 
     @GetMapping("/posts/searchText")
     public ResponseEntity<List<PostResponseDTO>> searchPosts(@RequestParam String searchText) {
-        List<PostResponseDTO> result = postService.getPostsBySearchText(searchText);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(postService.getPostsBySearchText(searchText));
     }
 
     @GetMapping("/posts/tags")
     public ResponseEntity<List<PostEntity>> getPostsByTags(@RequestParam List<String> tagNames) {
-        List<PostEntity> posts = postService.getPostsByTags(tagNames);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsByTags(tagNames));
     }
 
     @GetMapping("/posts/topics")
     public ResponseEntity<List<PostEntity>> getPostsByTopics(@RequestParam List<String> topicNames) {
-        List<PostEntity> posts = postService.getPostsByTopics(topicNames);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsByTopics(topicNames));
     }
 
     @GetMapping("/posts/latest")
     public ResponseEntity<List<PostResponseDTO>> getLatestPosts() {
-        List<PostResponseDTO> posts = postService.getLatestPosts();
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getLatestPosts());
     }
 
     @GetMapping("/posts/verification")
-    public List<PostResponseDTO> getPostsByReceiptVerification(@RequestParam Boolean receiptVerification) {
-        return postService.findPostsByReceiptVerification(receiptVerification);
+    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(@RequestParam Boolean receiptVerification) {
+        return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
     }
 
     @GetMapping("/weatherByLocation")
     public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(@RequestParam double lat, @RequestParam double lon) {
         try {
-            WeatherResponseDTO weatherResponse = weatherService.getWeatherByLocation(lat, lon);
-            return ResponseEntity.ok(weatherResponse);
+            return ResponseEntity.ok(weatherService.getWeatherByLocation(lat, lon));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @GetMapping("/foodImage")
     public ResponseEntity<List<String>> getFirstFoodImage(@RequestParam Integer postId) {
-        List<String> images = postService.getFirstFoodImageUrl(postId);
-        return ResponseEntity.ok(images);
+        return ResponseEntity.ok(postService.getFirstFoodImageUrl(postId));
     }
 
     @GetMapping("/foodImages")
     public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(@RequestParam List<Integer> postIds) {
-        Map<Integer, String> images = postService.getFirstFoodImagesByPostIds(postIds);
-        return ResponseEntity.ok(images);
+        return ResponseEntity.ok(postService.getFirstFoodImagesByPostIds(postIds));
     }
 
     @GetMapping("/posts/dailyViews")
     public ResponseEntity<List<PostResponseDTO>> getPostsSortedByViews() {
-        List<PostResponseDTO> posts = postService.getPostsSortedByDailyViews();
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(postService.getPostsSortedByDailyViews());
     }
 
     @GetMapping("/tags")
     public ResponseEntity<List<String>> getTagsByPostId(@RequestParam Integer postId) {
-        List<String> tagNames = postService.getTagsByPostId(postId);
-        return ResponseEntity.ok(tagNames);
+        return ResponseEntity.ok(postService.getTagsByPostId(postId));
     }
 
     //영수증 인증
