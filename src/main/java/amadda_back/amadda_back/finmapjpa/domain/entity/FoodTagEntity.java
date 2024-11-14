@@ -10,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
-
 @Data
 @Entity(name = "tag")
 @DynamicUpdate
@@ -25,10 +24,6 @@ public class FoodTagEntity {
     private String tagName;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id")  // 외래키 설정
     private PostResponseMapDTO post;
-
-
-
-    
 }

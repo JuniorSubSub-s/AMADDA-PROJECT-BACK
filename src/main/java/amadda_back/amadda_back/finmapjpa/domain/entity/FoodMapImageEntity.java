@@ -13,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-
 @Entity(name = "food_image")
 @Data
 @DynamicUpdate
@@ -30,8 +29,4 @@ public class FoodMapImageEntity {
     @ManyToOne
     @JoinColumn(name = "post_id")  // 외래키 설정
     private PostResponseMapDTO post;  // PostEntity와 연결된 필드
-
-
 }
-
-

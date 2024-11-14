@@ -19,8 +19,6 @@ import jakarta.persistence.Transient;
 import lombok.Data;
 
 
-
-
 @Data
 @Entity(name = "post")
 @DynamicUpdate
@@ -44,24 +42,21 @@ public class PostResponseMapDTO {
     private Boolean receiptVerification;
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    @JoinColumn(name = "restaurant_id") // 일관된 외래키 명칭
     private RestaurantMapEntity restaurant;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id") // 일관된 외래키 명칭
     private UserRequestMapDTO user;
 
     @Transient
     private List<String> foodImageUrls;  // foodImageUrls로 수정 (여러 이미지 URL을 담을 수 있도록 수정)
 
-    // userNickname을 반환하는 메서드 추가
     public String getUserNickname() {
         return this.user != null ? this.user.getUserNickname() : null;
     }
 
-    // userName을 반환하는 메서드 추가
     public String getUserName() {
         return this.user != null ? this.user.getUserName() : null;
     }
 }
-

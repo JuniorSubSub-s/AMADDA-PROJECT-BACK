@@ -22,6 +22,7 @@ public class UserRequestMapDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")  // 컬럼 명칭을 일관되게 수정
     private Integer userId;
 
     @Column(name = "user_name")
@@ -47,6 +48,4 @@ public class UserRequestMapDTO {
 
     @Column(name = "user_currency_balance")
     private Integer userCurrencyBalance = 0;
-
-    
 }
