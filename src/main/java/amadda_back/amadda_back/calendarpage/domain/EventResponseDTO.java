@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 public class EventResponseDTO {
     private int         calId ;
+    private int userId;
     private LocalDate   day ;
     private String      title ;
     private String      content ;

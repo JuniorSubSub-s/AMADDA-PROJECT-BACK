@@ -1,6 +1,6 @@
 package amadda_back.amadda_back.calendarpage.ctrl;
 
-
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,16 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import amadda_back.amadda_back.calendarpage.domain.EventRequestDTO;
 import amadda_back.amadda_back.calendarpage.domain.EventResponseDTO;
+import amadda_back.amadda_back.calendarpage.domain.GetPostEntity;
 import amadda_back.amadda_back.calendarpage.service.EventService;
-
-
-
-
-
 
 @RestController
 @RequestMapping("/events") // 엔트 컨트롤을 위한 메핑
@@ -34,29 +31,35 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping("/index/{currentYearMonth}")
-    public ResponseEntity<Object> landing(@PathVariable("currentYearMonth") String currentYearMonth) {
+    public ResponseEntity<Object> landing(@PathVariable("currentYearMonth") String currentYearMonth,
+            @RequestParam("userId") String userId) {
         System.out.println("client end point : /events/index/{currentYearMonth}" + eventService);
         System.out.println("오늘날짜 " + currentYearMonth);
+        System.out.println("유저 아이디: " + userId);
+
         Map<String, String> map = new HashMap<>();
         map.put("currentYearMonth", currentYearMonth);
-        List<EventResponseDTO> list = eventService.findAll(map);
+        map.put("userId", userId); // 유저 아이디 추가
+
+        List<EventResponseDTO> list = eventService.findAll(map); // userId에 맞는 데이터 필터링
         System.out.println("이번달 데이터 : " + list);
         System.out.println("result size : " + list.size());
+
         if (list.size() == 0) {
-	            // Map<String, String> msg = new HashMap<>();
-	            // msg.put("info", "저장된 데이터가 존재하지 않습니다.");
-	            return new ResponseEntity<>(list, HttpStatus.OK);
-	        } else {
-	            return new ResponseEntity<>(list, HttpStatus.OK);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(list, HttpStatus.OK);
         }
     }
 
     @GetMapping("/viewday/{dateId}")
-    public ResponseEntity<Object> view(@PathVariable("dateId") String dateId) {
+    public ResponseEntity<Object> view(@PathVariable("dateId") String dateId,
+            @RequestParam("userId") String userId) {
         System.out.println("client end point : /events/view/{id}");
         System.out.println("params = " + dateId);
         Map<String, String> map = new HashMap<>();
         map.put("id", dateId);
+        map.put("userId", userId); // 유저 아이디 추가
         List<EventResponseDTO> list = eventService.findlist(map);
         System.out.println("client list data : " + list);
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -88,7 +91,7 @@ public class EventController {
         Map<String, Integer> map = new HashMap<>();
         map.put("id", id);
         eventService.delete(map);
-        return new ResponseEntity<>(id+"번 데이터 삭제완료",HttpStatus.OK);
+        return new ResponseEntity<>(id + "번 데이터 삭제완료", HttpStatus.OK);
     }
 
     // update
@@ -99,4 +102,33 @@ public class EventController {
         eventService.update(params);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // 유저의 오래된 이벤트 4개를 가져오는 API
+    @GetMapping("/alarmData/{userId}")
+    public ResponseEntity<Object> getUserAlarmData(
+            @PathVariable Integer userId,
+            @RequestParam(defaultValue = "0") Integer offset) {  // offset 파라미터 추가
+        System.out.println("데이터 불러오기 중...");
+        
+        Map<String, Integer> map = new HashMap<>();
+        map.put("id", userId);
+        map.put("offset", offset);  // offset 값을 map에 추가하여 MyBatis 쿼리로 전달
+        
+        List<EventResponseDTO> result = eventService.getOldestUserEvents(map);
+        System.out.println("가져온 알람 데이터 4개: " + result);
+        
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("/post")
+    public List<GetPostEntity> getPostsByUserIdAndDateRange(@RequestParam("userId") String userId,
+                                                            @RequestParam("startDate") LocalDate startDate,
+                                                            @RequestParam("endDate") LocalDate endDate) {
+        System.out.println("아이디" + userId+ "시작 날짜" + startDate+ "끝 날짜" + endDate);
+        return eventService.findPostsByUserIdAndDateRange(userId, startDate, endDate);
+    }
+
+    
+    
+    
 }

@@ -45,46 +45,50 @@ public class HistoryService {
     public List<HistoryDaysDTO> parseXml(String xmlData) {
 
         List<HistoryDaysDTO> list = new ArrayList<>();
-
+    
         try {
             // DocumentBuilderFactory와 DocumentBuilder를 사용하여 XML 데이터를 파싱할 준비
             DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
             DocumentBuilder        builder  = factory.newDocumentBuilder();
             Document               document = builder.parse(new InputSource(new StringReader(xmlData))); // XML 문자열을 InputSource로 변환하여 파싱할 준비
-
+    
             // XML 문서에서 "item" 태그를 가진 모든 요소를 찾아 NodeList로 반환
             NodeList itemListNodes = document.getElementsByTagName("item");
             System.out.println("service itemlist node " + itemListNodes.getLength());
-
-            for (int i = 0; i < itemListNodes.getLength(); i++) {
-                Node itemListNode = itemListNodes.item(i);
     
-                if (itemListNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element itemListElement = (Element) itemListNode;
+            // itemListNodes.getLength()가 0일 경우 처리하지 않음
+            if (itemListNodes.getLength() > 0) {
+                for (int i = 0; i < itemListNodes.getLength(); i++) {
+                    Node itemListNode = itemListNodes.item(i);
     
-                    HistoryDaysDTO startBusStop;
+                    if (itemListNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element itemListElement = (Element) itemListNode;
     
-                    
-                    String dateName = getElementValue(itemListElement, "dateName");
-                    String locdate = getElementValue(itemListElement, "locdate");
-
-                    
+                        HistoryDaysDTO startBusStop;
     
-                    startBusStop = HistoryDaysDTO.builder()
-                                                .dateName(dateName)
-                                                .locdate(locdate)
-                                                .build();
+                        String dateName = getElementValue(itemListElement, "dateName");
+                        String locdate = getElementValue(itemListElement, "locdate");
     
-                    list.add(startBusStop);
+                        startBusStop = HistoryDaysDTO.builder()
+                                                    .dateName(dateName)
+                                                    .locdate(locdate)
+                                                    .build();
+    
+                        list.add(startBusStop);
+                    }
                 }
+            } else {
+                System.out.println("No 'item' elements found in XML data.");
             }
-
+    
         } catch (Exception e) {
-            // TODO: handle exception
+            // 예외 처리 로직 (필요한 경우 추가)
+            e.printStackTrace();
         }
-        
+    
         return list;
     }
+    
 
     // 특정 태그(예: "dateName" 또는 "locdate")의 텍스트 값을 추출하는 유틸리티 메서드
     // 주어진 tagName을 가진 노드를 찾고, 그 노드의 텍스트 내용을 반환합니다. 만약 해당 태그가 없으면 null을 반환
