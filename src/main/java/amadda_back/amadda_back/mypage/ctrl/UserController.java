@@ -2,7 +2,9 @@ package amadda_back.amadda_back.mypage.ctrl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import amadda_back.amadda_back.mypage.domain.entity.Badge;
 import amadda_back.amadda_back.mypage.domain.entity.UserInfoDTO;
 import amadda_back.amadda_back.mypage.exception.ResourceNotFoundException;
 import amadda_back.amadda_back.mypage.service.UserService;
@@ -94,4 +97,11 @@ public class UserController {
         // 반환할 URL 형식으로 수정
         return "/assets/" + destinationFile.getName();  // 반환 경로를 "/assets/"로 수정
     }
+
+    @GetMapping("/badge/{userId}")
+    public ResponseEntity<List<Badge>> getBadgesByUserId(@PathVariable(name = "userId") Integer userId) {
+        List<Badge> badges = userService.getBadgesByUserId(userId);
+        return ResponseEntity.ok(badges);
+    }
+    
 }
