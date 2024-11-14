@@ -13,7 +13,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Entity(name = "food_image")
+@Entity
+@Table(name = "food_image")
 @Data
 @DynamicUpdate
 public class FoodMapImageEntity {
