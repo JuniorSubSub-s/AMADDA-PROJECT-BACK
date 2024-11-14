@@ -1,6 +1,7 @@
 package amadda_back.amadda_back.finmapjpa.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,5 +15,7 @@ public interface RestaurantDAO extends JpaRepository<RestaurantEntity, Integer> 
 
     boolean existsByRestaurantNameOrRestaurantAddress(String restaurantName, String restaurantAddress);
 
-}
+    Optional<RestaurantEntity> findByRestaurantNameAndRestaurantAddress(String restaurantName,
+            String restaurantAddress);
 
+}

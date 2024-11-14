@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.WeatherResponseDTO;
 import amadda_back.amadda_back.View.service.OCRService;
 import amadda_back.amadda_back.View.service.PostService;
@@ -51,6 +51,7 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(postService.getPostsByUserId(userId));
     }
+
     @GetMapping("/posts/{postId}")
     public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable List<Integer> postId) {
         List<PostResponseDTO> posts = postService.getPostsByIds(postId);
@@ -150,6 +151,24 @@ public class Controller {
         // 서비스로 전달하여 이미지 저장 및 경로 반환
         return postService.saveImages(images, postId);
     }
-}
 
-    
+    //레스토랑 저장
+    // @PostMapping("/saveRestaurant")
+    // public ResponseEntity<?> saveRestaurant(@RequestParam String restaurantName,
+    //         @RequestParam String restaurantAddress,
+    //         @RequestParam Double locationLatitude,
+    //         @RequestParam Double locationLongitude) {
+    //     try {
+    //         RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+    //         if (restaurant != null) {
+    //             // 레스토랑 ID 반환
+    //             return ResponseEntity.ok(restaurant.getRestaurantId());
+    //         } else {
+    //             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("레스토랑 추가에 실패했습니다.");
+    //         }
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
+    //     }
+    // }
+}
