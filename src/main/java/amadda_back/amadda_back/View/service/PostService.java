@@ -2,18 +2,19 @@ package amadda_back.amadda_back.View.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
+import amadda_back.amadda_back.View.dao.TagDAO;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 
 @Service
 public class PostService {
@@ -21,36 +22,59 @@ public class PostService {
     @Autowired
     private PostDAO postDAO;
 
+    @Autowired
+    private FinmapPostDAO finmapPostDAO;
+
+    @Autowired
+    private FoodImageDAO foodImageDAO;
+
+    @Autowired
+    private TagDAO tagDAO;
+
+    // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
+    public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
+        List<PostEntity> postEntities = finmapPostDAO.findByRestaurant_RestaurantId(restaurantId);
+        return postEntities.stream()
+                .map(PostResponseDTO::new) // PostEntity -> PostResponseDTO 변환
+                .collect(Collectors.toList());
+    }
+
     public List<PostResponseDTO> getPostsByWeather(String weather) {
-        return postDAO.findPostsByWeather(weather);
+        List<PostEntity> postEntities = postDAO.findPostsByWeather(weather);
+        return convertToPostResponseDTO(postEntities);
     }
 
     public List<PostResponseDTO> getPostsByMood(List<String> moods) {
-        return postDAO.findByMoodIn(moods);
+        List<PostEntity> postEntities = postDAO.findByMoodIn(moods);
+        return convertToPostResponseDTO(postEntities);
     }
 
     public List<PostResponseDTO> getPostsByIds(List<Integer> postIds) {
-        return postDAO.findAllById(postIds);
+        List<PostEntity> postEntities = postDAO.findAllById(postIds);
+        return convertToPostResponseDTO(postEntities);
     }
 
     public List<PostResponseDTO> getPostsByPrivacy(PostResponseDTO.Privacy privacy) {
-        return postDAO.findPostsByPrivacy(privacy);
+        // Privacy 타입을 PostEntity.Privacy로 변환
+        PostEntity.Privacy entityPrivacy = PostEntity.Privacy.valueOf(privacy.name());
+        List<PostEntity> postEntities = postDAO.findPostsByPrivacy(entityPrivacy);
+        return convertToPostResponseDTO(postEntities);
     }
 
     public List<PostResponseDTO> getPostsByColor(String color) {
-        // 'Total'일 경우 모든 게시물을 반환
         if ("Total".equals(color)) {
-            return postDAO.findAllByOrderByPostDateAsc(); // 모든 게시물을 반환하는 DAO 메소드 필요
+            List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
+            return convertToPostResponseDTO(postEntities);
         }
 
-        // 'Black'일 경우 totalPost가 50 미만인 게시물 검색
         if ("Black".equals(color)) {
-            return postDAO.findPostsByLessThan50(); // totalPost가 50 미만인 게시물 반환하는 DAO 메소드 필요
+            List<PostEntity> postEntities = postDAO.findPostsByLessThan50();
+            return convertToPostResponseDTO(postEntities);
         }
 
-        // 그 외의 색상에 대해서는 최소 게시물 수를 기준으로 검색
         int minPosts = getMinPostsByColor(color);
-        return postDAO.findPostsByColor(minPosts);
+        List<PostEntity> postEntities = postDAO.findPostsByColor(minPosts);
+        return convertToPostResponseDTO(postEntities);
     }
 
     private int getMinPostsByColor(String color) {
@@ -65,20 +89,20 @@ public class PostService {
                 return 100;
             case "Red":
                 return 50;
-            default:  // "Black"
-                return 0; // Black일 경우는 별도로 처리
+            default:
+                return 0;
         }
     }
 
     public List<PostResponseDTO> getPostsBySearchText(String searchText) {
-        List<PostResponseDTO> postsByRestaurant = postDAO.findByRestaurantName(searchText);
-        List<PostResponseDTO> postsByTag = postDAO.findByTagTagName(searchText);
+        List<PostEntity> postsByRestaurant = postDAO.findByRestaurantName(searchText);
+        List<PostEntity> postsByTag = postDAO.findByTagTagName(searchText);
 
-        Set<PostResponseDTO> combinedPosts = new HashSet<>();
+        List<PostEntity> combinedPosts = new ArrayList<>();
         combinedPosts.addAll(postsByRestaurant);
         combinedPosts.addAll(postsByTag);
 
-        return new ArrayList<>(combinedPosts);
+        return convertToPostResponseDTO(combinedPosts);
     }
 
     public List<PostEntity> getPostsByTags(List<String> tagNames) {
@@ -90,15 +114,14 @@ public class PostService {
     }
 
     public List<PostResponseDTO> getLatestPosts() {
-        return postDAO.findAllByOrderByPostDateAsc();
+        List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
+        return convertToPostResponseDTO(postEntities);
     }
 
     public List<PostResponseDTO> findPostsByReceiptVerification(Boolean receiptVerification) {
-        return postDAO.findByReceiptVerification(receiptVerification);
+        List<PostEntity> postEntities = postDAO.findByReceiptVerification(receiptVerification);
+        return convertToPostResponseDTO(postEntities);
     }
-
-    @Autowired
-    private FoodImageDAO foodImageDAO;
 
     public List<String> getFirstFoodImageUrl(Integer postId) {
         return foodImageDAO.findFirstFoodImageUrlByPostId(postId);
@@ -106,20 +129,49 @@ public class PostService {
 
     public Map<Integer, String> getFirstFoodImagesByPostIds(List<Integer> postIds) {
         List<String> imageUrls = foodImageDAO.findFoodImagesByPostIds(postIds);
-
         Map<Integer, String> postImageMap = new HashMap<>();
-        for (Integer postId : postIds) {
-            String imageUrl = imageUrls.stream()
-                    .filter(url -> url != null) // 각 postId에 대한 첫 번째 이미지 URL만 추가
-                    .findFirst().orElse("Image not found");
-            postImageMap.put(postId, imageUrl);
+
+        for (int i = 0; i < postIds.size(); i++) {
+            postImageMap.put(postIds.get(i), imageUrls.size() > i ? imageUrls.get(i) : "Image not found");
         }
 
         return postImageMap;
     }
 
     public List<PostResponseDTO> getPostsSortedByDailyViews() {
-        return postDAO.findAllOrderByDailyViewsDesc();
+        List<PostEntity> postEntities = postDAO.findAllOrderByDailyViewsDesc();
+        return convertToPostResponseDTO(postEntities);
+    }
+
+    // Entity -> DTO 변환
+    private List<PostResponseDTO> convertToPostResponseDTO(List<PostEntity> postEntities) {
+        List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
+        for (PostEntity entity : postEntities) {
+            postResponseDTOs.add(new PostResponseDTO(entity)); // PostEntity를 PostResponseDTO로 변환
+        }
+        return postResponseDTOs;
+    }
+
+    public List<String> getTagsByPostId(Integer postId) {
+        return tagDAO.findTagNamesByPostId(postId);
+    }
+
+    // 사용자 ID로 포스트를 가져오는 메서드
+    public List<PostResponseDTO> getPostsByUserId(Integer userId) {
+        // userId로 Post 조회
+        List<PostEntity> posts = postDAO.findByUser_UserId(userId); 
+        return posts.stream()
+                .map(PostResponseDTO::new)  // PostEntity -> PostResponseDTO 변환
+                .collect(Collectors.toList());
+    }
+
+    public boolean deletePost(Integer postId) {
+        // 게시물이 존재하는지 확인
+        if (postDAO.existsById(postId)) {
+            postDAO.deleteById(postId); // 삭제
+            return true;
+        }
+        return false; // 게시물이 존재하지 않으면 false 반환
     }
 
 }

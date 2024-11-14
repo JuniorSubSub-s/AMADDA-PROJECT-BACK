@@ -15,47 +15,54 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Table(name = "user")
 @Entity
+@Table(name = "user")
 @Data
 @DynamicUpdate
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer userId; // 자동 증가 ID 필드
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 
-    @Column(name = "user_password")
-    private String userPassword;
-
-    @Column(name = "user_email")
+    @Column(name = "user_email", unique = true, length = 50)
     private String userEmail;
 
-    @Column(name = "user_nickname")
+    @Column(name = "user_nickname", nullable = false, length = 50)
     private String userNickname;
 
-    @Column(name = "user_phonenumber")
+    @Column(name = "user_phonenumber", nullable = false, length = 50)
     private String userPhoneNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_gender")
+    @Column(name = "user_gender", nullable = false)
     private Gender userGender;
 
-    @Column(name = "user_createat")
+    @Column(name = "user_createat", nullable = false)
     private LocalDateTime userCreateAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "subscription")
+    @Column(name = "subscription", nullable = false)
     private Subscription subscription = Subscription.N;
 
     @Column(name = "subscription_date")
     private LocalDate subscriptionDate;
 
-    @Column(name = "user_currency_balance")
+    @Column(name = "user_currency_balance", nullable = false)
     private Integer userCurrencyBalance = 0;
+
+    @Column(name = "introduce_text", columnDefinition = "TEXT")
+    private String introduceText;
+
+    @Column(name = "user_birth")
+    private LocalDate birthDate;
+
+    @Column(name = "profile_image", nullable = true)
+    private String profileImage;
 
     public enum Gender {
         M, F

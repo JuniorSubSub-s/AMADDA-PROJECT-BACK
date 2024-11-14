@@ -64,3 +64,4 @@ public class PostResponseMapDTO {
         return this.user != null ? this.user.getUserName() : null;
     }
 }
+

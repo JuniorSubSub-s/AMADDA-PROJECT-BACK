@@ -1,6 +1,6 @@
 plugins {
    id 'java'
-   id 'org.springframework.boot' version '3.2.11'
+   id 'org.springframework.boot' version '3.2.9'
    id 'io.spring.dependency-management' version '1.1.6'
 }
 
@@ -24,6 +24,10 @@ repositories {
 }
 
 dependencies {
+
+   // XML 바인딩을 위한 JAXB 의존성추가
+	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
+   implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1'
 
    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
    implementation 'org.springframework.boot:spring-boot-starter-web'

@@ -2,6 +2,7 @@ package amadda_back.amadda_back.finmapjpa.ctrl;
 
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
     private final RestaurantMapService restaurantMapService;
-    @Autowired
-    private final PostMapService postMapService;
+    private final PostMapService PostMapService;
 
     // 모든 레스토랑을 가져오는 API
     @GetMapping("/restaurants")
@@ -47,7 +46,7 @@ public class PostController {
      // 특정 레스토랑의 포스트 정보를 가져오는 API
      @GetMapping("/restaurants/{restaurantId}/posts")
      public ResponseEntity<List<PostResponseMapDTO>> getPostsByRestaurantId(@PathVariable("restaurantId") Integer restaurantId) {
-         List<PostResponseMapDTO> posts = postMapService.getPostsByRestaurantId(restaurantId);
+         List<PostResponseMapDTO> posts = PostMapService.getPostsByRestaurantId(restaurantId);
          return new ResponseEntity<>(posts, HttpStatus.OK);
      }
 }
