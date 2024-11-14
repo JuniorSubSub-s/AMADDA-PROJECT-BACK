@@ -8,19 +8,20 @@
 
     <insert id="insertRow"
             parameterType="amadda_back.amadda_back.calendarpage.domain.EventRequestDTO">
-        INSERT INTO calendar(day, title, content, color, address) 
-        VALUES( #{day}, #{title}, #{content}, #{color}, #{address})
+        INSERT INTO calendar(user_id, day, title, content, color, address) 
+        VALUES( #{userId}, #{day}, #{title}, #{content}, #{color}, #{address})
     </insert>     
 
     <!-- findAllRow --> 
-
     <select id="findAllRow"
             parameterType="java.util.HashMap"
             resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
         SELECT cal_id, day, title, content, color, address
-        FROM   calendar 
-        WHERE  day LIKE CONCAT(#{currentYearMonth}, '%')
-     </select>
+        FROM calendar 
+        WHERE (user_id = #{userId} OR holiday = 1)
+        AND day LIKE CONCAT(#{currentYearMonth}, '%')
+    </select>
+
 
     <!-- findlist --> 
 
@@ -29,7 +30,7 @@
             resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
         SELECT cal_id, day, title, content, color, address
         FROM   calendar    
-        WHERE  day = #{ id }
+        WHERE  (user_id = #{userId} OR holiday = 1) AND day = #{ id }
     </select>
 
     <!-- findRow --> 
@@ -63,9 +64,9 @@
 
     <insert id="savehistoryAll" 
             parameterType="java.util.List">
-        INSERT INTO calendar (day, title, color)
+        INSERT INTO calendar (day, title, color, holiday)
         <foreach collection="list" item="item" separator=" UNION ALL ">
-            SELECT #{item.locdate}, #{item.dateName}, 'orange'
+            SELECT #{item.locdate}, #{item.dateName}, 'orange', '1'
             FROM DUAL
             WHERE NOT EXISTS (
                 SELECT 1 FROM calendar 
@@ -76,5 +77,16 @@
 
 
 
-    
+
+    <!-- getOldestUserEvents --> 
+
+    <select id="getOldestUserEvents"
+            parameterType="java.util.HashMap"
+            resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
+        SELECT cal_id, user_id, day, title, content, color, address
+        FROM calendar 
+        WHERE user_id = #{id}
+        ORDER BY day ASC
+
+    </select>    
     </mapper>

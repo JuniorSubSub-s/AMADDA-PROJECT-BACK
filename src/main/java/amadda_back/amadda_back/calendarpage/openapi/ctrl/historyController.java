@@ -76,12 +76,18 @@ public class historyController {
             System.out.println("http connection = " + http); // 전부 합친 url이 보임
             int code = http.getResponseCode();              // HTTP 응답 코드 확인
             System.out.println("http response code = " + code); // 200이 나와야 정상
-            if( code == 200 ) {                                 // 응답 코드가 200(정상)일 경우
+            if (code == 200) {                                 // 응답 코드가 200(정상)일 경우
                 stream = http.getInputStream();                 // 응답 데이터를 InputStream으로 읽음
                 result = readString(stream);    // readString은 내가 만든 메서드, InputStream을 문자열로 변환
                 System.out.println("result = " + result ); // ex) 추석이 들어있으면 추석이 나옴(xml 트리형식으로)
                 list = historyService.parseXml(result);    // XML 데이터를 파싱하여 리스트로 변환
-                eventService.savehistory(list);            // 파싱한 데이터를 DB에 저장
+            
+                // list가 비어있지 않으면 저장
+                if (!list.isEmpty()) {
+                    eventService.savehistory(list);            // 파싱한 데이터를 DB에 저장
+                } else {
+                    System.out.println("No data to save. List is empty.");
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
