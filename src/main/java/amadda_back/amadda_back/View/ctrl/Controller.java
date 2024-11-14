@@ -57,6 +57,17 @@ public class Controller {
         return ResponseEntity.ok(posts);
     }
 
+    // 포스트 삭제 처리
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+        boolean deleted = postService.deletePost(postId);
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
+        } else {
+            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
+        }
+    }
+
     @GetMapping("/posts/mood")
     public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam List<String> moods) {
         return ResponseEntity.ok(postService.getPostsByMood(moods));
