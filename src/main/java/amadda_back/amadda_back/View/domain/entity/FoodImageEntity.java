@@ -1,5 +1,7 @@
 package amadda_back.amadda_back.View.domain.entity;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import lombok.Data;
 @Table(name = "food_image")
 @Data
 @Entity
+@DynamicUpdate
 public class FoodImageEntity {
 
     @Id
@@ -26,5 +29,9 @@ public class FoodImageEntity {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private PostEntity post;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id")
+    private RestaurantEntity restaurant;
 
 }

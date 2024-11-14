@@ -1,7 +1,6 @@
 package amadda_back.amadda_back.View.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,4 +34,16 @@ public class RestaurantEntity {
 
     @Column(name = "location_longitude")
     private Double locationLongitude;
+
+    // 기본 생성자
+    public RestaurantEntity() {
+    }
+
+    // 사용자 정의 생성자
+    public RestaurantEntity(String restaurantName, String restaurantAddress, Double locationLatitude, Double locationLongitude) {
+        this.restaurantName = restaurantName;
+        this.restaurantAddress = restaurantAddress;
+        this.locationLatitude = locationLatitude;
+        this.locationLongitude = locationLongitude;
+    }
 }
