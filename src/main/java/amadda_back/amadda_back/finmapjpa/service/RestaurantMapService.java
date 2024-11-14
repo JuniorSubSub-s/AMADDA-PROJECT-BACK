@@ -1,22 +1,24 @@
 package amadda_back.amadda_back.finmapjpa.service;
 
 
-import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
-import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import amadda_back.amadda_back.finmapjpa.dao.RestaurantMapDAO;
+import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantMapEntity;
+
 import java.util.List;
 
 @Service
-public class RestaurantService {
+public class RestaurantMapService {
 
     @Autowired
-    private RestaurantDAO restaurantDao;
+    private RestaurantMapDAO restaurantDao;
 
     // 모든 레스토랑 정보 반환
-    public List<RestaurantEntity> getAllRestaurants() {
+    public List<RestaurantMapEntity> getAllRestaurants() {
         return restaurantDao.findAll();
     }
 

@@ -1,9 +1,10 @@
-package amadda_back.amadda_back.View.domain.entity;
+package amadda_back.amadda_back.finmapjpa.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,26 +13,20 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Table(name = "food_image")
+@Entity(name = "food_image")
 @Data
-@Entity
 @DynamicUpdate
-public class FoodImageEntity {
+public class FoodMapImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "food_image_id")
-    private Integer foodImageId;
+    private Long foodImageId; // 이미지 ID
 
-    @Column(name = "food_image_url")
-    private String foodImageUrl;
-
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private PostEntity post;
+    @Column(name = "food_image_url", nullable = false)
+    private String foodImageUrl; // 음식 이미지 URL
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private RestaurantEntity restaurant;
-
+    @JoinColumn(name = "post_id")  // 외래키 설정
+    private PostResponseMapDTO post;  // PostEntity와 연결된 필드
 }
