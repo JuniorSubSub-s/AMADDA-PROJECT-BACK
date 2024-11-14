@@ -879,3 +879,98 @@ This generated password is for development use only. Your security configuration
 2024-11-14 16:43:10 - Tomcat started on port 7777 (http) with context path ''
 2024-11-14 16:43:10 - Started AmaddaBackApplication in 2.231 seconds (process running for 1083.118)
 2024-11-14 16:43:10 - Condition evaluation unchanged
+2024-11-14 17:15:29 - Starting AmaddaBackApplication using Java 17.0.11 with PID 22280 (C:\Users\82103\AMADDA-PROJECT3\AMADDA-PROJECT-BACK\build\classes\java\main started by 82103 in C:\Users\82103\AMADDA-PROJECT3\AMADDA-PROJECT-BACK)
+2024-11-14 17:15:29 - No active profile set, falling back to 1 default profile: "default"
+2024-11-14 17:15:30 - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-11-14 17:15:30 - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-11-14 17:15:36 - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-14 17:15:38 - Finished Spring Data repository scanning in 1589 ms. Found 13 JPA repository interfaces.
+2024-11-14 17:15:42 - Tomcat initialized with port 7777 (http)
+2024-11-14 17:15:42 - Starting service [Tomcat]
+2024-11-14 17:15:42 - Starting Servlet engine: [Apache Tomcat/10.1.28]
+2024-11-14 17:15:42 - Initializing Spring embedded WebApplicationContext
+2024-11-14 17:15:42 - Root WebApplicationContext: initialization completed in 12513 ms
+2024-11-14 17:15:43 - HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-11-14 17:15:43 - HHH000412: Hibernate ORM core version 6.4.10.Final
+2024-11-14 17:15:44 - HHH000026: Second-level cache disabled
+2024-11-14 17:15:45 - No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-11-14 17:15:45 - HikariPool-1 - Starting...
+2024-11-14 17:15:45 - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2d118aec
+2024-11-14 17:15:45 - HikariPool-1 - Start completed.
+2024-11-14 17:15:46 - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-11-14 17:15:50 - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-11-14 17:15:51 - GenerationTarget encountered exception accepting command : Error executing DDL "
+    alter table post 
+       modify column user_id varchar(255)" via JDBC [Referencing column 'user_id' and referenced column 'user_id' in foreign key constraint 'post_ibfk_2' are incompatible.]
+org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    alter table post 
+       modify column user_id varchar(255)" via JDBC [Referencing column 'user_id' and referenced column 'user_id' in foreign key constraint 'post_ibfk_2' are incompatible.]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:94)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:574)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:514)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:333)
+	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:84)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:232)
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:117)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144)
+	at java.base/java.util.HashMap.forEach(HashMap.java:1421)
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141)
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37)
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35)
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:315)
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:450)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1507)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at amadda_back.amadda_back.AmaddaBackApplication.main(AmaddaBackApplication.java:11)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50)
+Caused by: java.sql.SQLException: Referencing column 'user_id' and referenced column 'user_id' in foreign key constraint 'post_ibfk_2' are incompatible.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:130)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.StatementImpl.executeInternal(StatementImpl.java:770)
+	at com.mysql.cj.jdbc.StatementImpl.execute(StatementImpl.java:653)
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94)
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java)
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:80)
+	... 42 common frames omitted
+2024-11-14 17:15:51 - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-11-14 17:15:53 - Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-11-14 17:16:01 - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-11-14 17:16:01 - 
+
+Using generated security password: 7f074e5d-d1d0-4eae-9f4f-47f32067b127
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2024-11-14 17:16:04 - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@120988b3, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3ab674fc, org.springframework.security.web.context.SecurityContextHolderFilter@2a1969da, org.springframework.security.web.header.HeaderWriterFilter@3bacd509, org.springframework.web.filter.CorsFilter@60ddab39, org.springframework.security.web.authentication.logout.LogoutFilter@735f7c9c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@476c9030, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@217b7a52, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5bb42357, org.springframework.security.web.access.ExceptionTranslationFilter@77e7259e, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6675447c]
+2024-11-14 17:16:04 - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2024-11-14 17:16:05 - LiveReload server is running on port 35729
+2024-11-14 17:16:06 - Tomcat started on port 7777 (http) with context path ''
+2024-11-14 17:16:06 - Started AmaddaBackApplication in 38.184 seconds (process running for 41.755)
+2024-11-14 17:16:32 - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-11-14 17:16:32 - Initializing Servlet 'dispatcherServlet'
+2024-11-14 17:16:32 - Completed initialization in 3 ms
