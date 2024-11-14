@@ -35,7 +35,7 @@ public class Controller {
     private final OCRService ocrService;
 
     @GetMapping("/postsByWeather")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByWeather(@RequestParam String weather) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByWeather(@RequestParam(name = "weather") String weather) {
         try {
             System.out.println("params = " + weather);
             List<PostResponseDTO> posts = postService.getPostsByWeather(weather);
@@ -48,42 +48,43 @@ public class Controller {
     }
 
     @GetMapping("/posts/user/{userId}")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByUserId(@PathVariable Integer userId) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByUserId(@PathVariable(name = "userId") Integer userId) {
         return ResponseEntity.ok(postService.getPostsByUserId(userId));
     }
+
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable List<Integer> postId) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable(name = "postId") List<Integer> postId) {
         List<PostResponseDTO> posts = postService.getPostsByIds(postId);
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/posts/mood")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam List<String> moods) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {
         return ResponseEntity.ok(postService.getPostsByMood(moods));
     }
 
     @GetMapping("/posts/privacy")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam PostResponseDTO.Privacy privacy) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam(name = "privacy") PostResponseDTO.Privacy privacy) {
         return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
     }
 
     @GetMapping("/posts/pinColor")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam String color) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam(name = "color") String color) {
         return ResponseEntity.ok(postService.getPostsByColor(color));
     }
 
     @GetMapping("/posts/searchText")
-    public ResponseEntity<List<PostResponseDTO>> searchPosts(@RequestParam String searchText) {
+    public ResponseEntity<List<PostResponseDTO>> searchPosts(@RequestParam(name = "searchText") String searchText) {
         return ResponseEntity.ok(postService.getPostsBySearchText(searchText));
     }
 
     @GetMapping("/posts/tags")
-    public ResponseEntity<List<PostEntity>> getPostsByTags(@RequestParam List<String> tagNames) {
+    public ResponseEntity<List<PostEntity>> getPostsByTags(@RequestParam(name = "tagNames") List<String> tagNames) {
         return ResponseEntity.ok(postService.getPostsByTags(tagNames));
     }
 
     @GetMapping("/posts/topics")
-    public ResponseEntity<List<PostEntity>> getPostsByTopics(@RequestParam List<String> topicNames) {
+    public ResponseEntity<List<PostEntity>> getPostsByTopics(@RequestParam(name = "topicNames") List<String> topicNames) {
         return ResponseEntity.ok(postService.getPostsByTopics(topicNames));
     }
 
@@ -93,12 +94,12 @@ public class Controller {
     }
 
     @GetMapping("/posts/verification")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(@RequestParam Boolean receiptVerification) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(@RequestParam(name = "receiptVerification") Boolean receiptVerification) {
         return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
     }
 
     @GetMapping("/weatherByLocation")
-    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(@RequestParam double lat, @RequestParam double lon) {
+    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(@RequestParam(name = "lat") double lat, @RequestParam(name = "lon") double lon) {
         try {
             return ResponseEntity.ok(weatherService.getWeatherByLocation(lat, lon));
         } catch (Exception e) {
@@ -108,12 +109,12 @@ public class Controller {
     }
 
     @GetMapping("/foodImage")
-    public ResponseEntity<List<String>> getFirstFoodImage(@RequestParam Integer postId) {
+    public ResponseEntity<List<String>> getFirstFoodImage(@RequestParam(name = "postId") Integer postId) {
         return ResponseEntity.ok(postService.getFirstFoodImageUrl(postId));
     }
 
     @GetMapping("/foodImages")
-    public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(@RequestParam List<Integer> postIds) {
+    public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(@RequestParam(name = "postIds") List<Integer> postIds) {
         return ResponseEntity.ok(postService.getFirstFoodImagesByPostIds(postIds));
     }
 
@@ -123,7 +124,7 @@ public class Controller {
     }
 
     @GetMapping("/tags")
-    public ResponseEntity<List<String>> getTagsByPostId(@RequestParam Integer postId) {
+    public ResponseEntity<List<String>> getTagsByPostId(@RequestParam(name = "postId") Integer postId) {
         return ResponseEntity.ok(postService.getTagsByPostId(postId));
     }
 
@@ -151,5 +152,3 @@ public class Controller {
         return postService.saveImages(images, postId);
     }
 }
-
-    
