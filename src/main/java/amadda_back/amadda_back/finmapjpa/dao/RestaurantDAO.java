@@ -15,3 +15,4 @@ public interface RestaurantDAO extends JpaRepository<RestaurantEntity, Integer> 
     boolean existsByRestaurantNameOrRestaurantAddress(String restaurantName, String restaurantAddress);
 
 }
+

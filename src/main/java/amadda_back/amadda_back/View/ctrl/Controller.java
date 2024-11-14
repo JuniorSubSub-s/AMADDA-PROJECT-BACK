@@ -36,28 +36,25 @@ public class Controller {
 
     @GetMapping("/postsByWeather")
     public ResponseEntity<List<PostResponseDTO>> getPostsByWeather(@RequestParam String weather) {
-        return ResponseEntity.ok(postService.getPostsByWeather(weather));
-    }
-
-    @GetMapping("/posts/{postId}")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable List<Integer> postId) {
-        return ResponseEntity.ok(postService.getPostsByIds(postId));
-    }
-
-    // 포스트 삭제 처리
-    @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
-        boolean deleted = postService.deletePost(postId);
-        if (deleted) {
-            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
-        } else {
-            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
+        try {
+            System.out.println("params = " + weather);
+            List<PostResponseDTO> posts = postService.getPostsByWeather(weather);
+            return ResponseEntity.ok(posts);
+        } catch (Exception e) {
+            System.err.println("Error fetching posts by weather: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @GetMapping("/posts/user/{userId}")
     public ResponseEntity<List<PostResponseDTO>> getPostsByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(postService.getPostsByUserId(userId));
+    }
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable List<Integer> postId) {
+        List<PostResponseDTO> posts = postService.getPostsByIds(postId);
+        return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/posts/mood")
