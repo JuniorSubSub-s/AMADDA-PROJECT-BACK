@@ -1,7 +1,6 @@
 package amadda_back.amadda_back.finmapjpa.domain.entity;
 
 import org.hibernate.annotations.DynamicUpdate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,8 +17,8 @@ public class ModalBadgeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "badge_id")
-    private Integer badgeId;
+    @Column(name = "badge_id")  // 물리적 컬럼명 'badge_id'를 명시적으로 설정
+    private Integer badgeId;  // 논리적 컬럼명 'badgeId'
 
     @Column(name = "badge_name")
     private String badgeName;
@@ -29,14 +28,4 @@ public class ModalBadgeEntity {
 
     @Column(name = "badge_image")
     private String badgeImage;
-
-    // 추가된 getter 메소드
-    public String getBadgeImage() {
-        return badgeImage;
-    }
-
-    // 추가된 setter 메소드
-    public void setBadgeImage(String badgeImage) {
-        this.badgeImage = badgeImage;
-    }
 }
