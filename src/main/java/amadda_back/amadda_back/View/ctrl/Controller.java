@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,6 +57,17 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable(name = "postId") List<Integer> postId) {
         List<PostResponseDTO> posts = postService.getPostsByIds(postId);
         return ResponseEntity.ok(posts);
+    }
+
+    // 포스트 삭제 처리
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+        boolean deleted = postService.deletePost(postId);
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
+        } else {
+            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
+        }
     }
 
     @GetMapping("/posts/mood")

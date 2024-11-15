@@ -1,10 +1,14 @@
 package amadda_back.amadda_back.mypage.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import amadda_back.amadda_back.mypage.dao.BadgeDao;
 import amadda_back.amadda_back.mypage.dao.UserRepository;
 import amadda_back.amadda_back.View.domain.entity.UserEntity;
+import amadda_back.amadda_back.mypage.domain.entity.Badge;
 import amadda_back.amadda_back.mypage.domain.entity.UserInfoDTO;
 import amadda_back.amadda_back.mypage.exception.ResourceNotFoundException;
 
@@ -13,11 +17,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final FileService fileService; // 파일 서비스 추가
+    private final BadgeDao badgeDao;
 
     // 생성자에서 FileService 주입
-    public UserService(UserRepository userRepository, FileService fileService) {
+    public UserService(UserRepository userRepository, FileService fileService, BadgeDao badgeDao) {
         this.userRepository = userRepository;
         this.fileService = fileService;
+        this.badgeDao = badgeDao;
     }
 
     // 사용자 정보 조회
@@ -117,4 +123,10 @@ public class UserService {
         user.setProfileImage(filePath); // 저장된 파일 경로를 프로필 이미지로 설정
         userRepository.save(user); // 변경 사항 저장
     }
+
+    public List<Badge> getBadgesByUserId(Integer userId) {
+        return badgeDao.findBadgesByUserId(userId);
+    }
+
+    
 }
