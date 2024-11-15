@@ -1,6 +1,5 @@
 package amadda_back.amadda_back.mypage.domain.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +10,7 @@ public class Badge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "badge_id")  // 물리적 컬럼명 'badge_id' 지정
     private Integer badgeId;
 
     @Column(name = "badge_name")

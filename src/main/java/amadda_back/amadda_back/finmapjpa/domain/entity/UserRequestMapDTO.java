@@ -1,9 +1,9 @@
 package amadda_back.amadda_back.finmapjpa.domain.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.DynamicUpdate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Table(name = "user")
@@ -48,4 +49,6 @@ public class UserRequestMapDTO {
 
     @Column(name = "user_currency_balance")
     private Integer userCurrencyBalance = 0;
+
+
 }

@@ -4,6 +4,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,21 +13,21 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Data
-@Table(name = "tag")
 @Entity
+@Table(name = "topic")
+@Data
 @DynamicUpdate
-public class FoodTagEntity {
+public class TopicMapEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
-    private Integer tagId;
+    @Column(name = "topic_id")
+    private Long topicId; 
 
-    @Column(name = "tag_name")
-    private String tagName;
+    @Column(name = "topic_name")
+    private String topicName; // 음식 이미지 URL
 
     @ManyToOne
     @JoinColumn(name = "post_id")  // 외래키 설정
-    private PostResponseMapDTO post;
+    private PostResponseMapDTO post;  // PostEntity와 연결된 필드
 }

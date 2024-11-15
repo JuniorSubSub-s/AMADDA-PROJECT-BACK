@@ -11,6 +11,7 @@ public class UserBadge {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_badge_id")  // 컬럼명을 명확히 지정
     private Integer userBadgeId;
 
     @ManyToOne
@@ -20,5 +21,4 @@ public class UserBadge {
     @ManyToOne
     @JoinColumn(name = "badge_id", nullable = false)
     private Badge badge;
-
 }
