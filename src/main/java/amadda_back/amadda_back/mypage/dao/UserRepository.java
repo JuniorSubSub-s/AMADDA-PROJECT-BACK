@@ -28,5 +28,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     int countFollowerByUserId(@Param("userId") int userId);
 
     @Query("SELECT COUNT(b) FROM UserBadge b WHERE b.userId = :userId")
-    int countBadgeByUserId(@Param("userId") int userId); // 뱃지 수 카운트 쿼리 추가
+    int countBadgeByUserId(@Param("userId") int userId);
+
+    // 결제 구현을 위해서 유저 닉네임 찾기
+    UserEntity findByUserNickname(String userNickname);
 }
