@@ -1,13 +1,13 @@
 package amadda_back.amadda_back.View.service;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,13 @@ import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
 import amadda_back.amadda_back.View.dao.TagDAO;
 import amadda_back.amadda_back.View.dao.ThemeDAO;
+import amadda_back.amadda_back.View.dao.TopicDAO;
 import amadda_back.amadda_back.View.domain.entity.FoodImageEntity;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.View.domain.entity.TagEntity;
+import amadda_back.amadda_back.View.domain.entity.TopicEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
 import amadda_back.amadda_back.mypage.dao.UserRepository;
@@ -49,6 +52,9 @@ public class PostService {
 
     @Autowired
     private ThemeDAO themeDAO;
+
+    @Autowired
+    private TopicDAO topicDAO;
 
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
@@ -207,39 +213,33 @@ public class PostService {
         return postDAO.save(post);
     }
 
-    // 이미지 저장
-    public List<String> saveImages(List<MultipartFile> images, Integer postId) {
-        List<String> imagePaths = new ArrayList<>();
+    // 주제 저장
+    public void saveTopics(List<String> topics, Integer postId) {
+        // PostEntity 조회
+        PostEntity post = postDAO.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + postId));
 
-        for (MultipartFile image : images) {
-            String imageUrl = saveImageFile(image);
-            if (imageUrl != null) {
-                imagePaths.add(imageUrl);
-
-                // FoodImageEntity 생성 및 저장
-                FoodImageEntity foodImage = new FoodImageEntity();
-                foodImage.setFoodImageUrl(imageUrl);
-                PostEntity post = postDAO.findById(postId)
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + postId));
-                foodImage.setPost(post);
-                foodImageDAO.save(foodImage);
-            }
+        // TopicEntity 저장
+        for (String topicName : topics) {
+            TopicEntity topic = new TopicEntity();
+            topic.setTopicName(topicName);
+            topic.setPost(post); // PostEntity와 연결
+            topicDAO.save(topic);
         }
-        return imagePaths;
     }
 
-    private String saveImageFile(MultipartFile image) {
-        String directory = "src/main/resources/static/post/images/";
-        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-        String filePath = directory + fileName;
+    // 태그 저장
+    public void savetags(List<String> tags, Integer postId) {
+        // PostEntity 조회
+        PostEntity post = postDAO.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + postId));
 
-        try {
-            File file = new File(filePath);
-            image.transferTo(file);
-            return "/post/images/" + fileName; // 클라이언트에서 접근 가능한 URL 반환
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        // TopicEntity 저장
+        for (String tagName : tags) {
+            TagEntity tag = new TagEntity();
+            tag.setTagName(tagName);
+            tag.setPost(post); // PostEntity와 연결
+            tagDAO.save(tag);
         }
     }
 
@@ -259,6 +259,19 @@ public class PostService {
             return true;
         }
         return false; // 게시물이 존재하지 않으면 false 반환
+    }
+
+    // 이미지 저장
+    public void saveImage(List<String> imageUrls, Integer postId, Integer restaurantId) {
+
+        for (String imageUrl : imageUrls) {
+            FoodImageEntity foodImage = new FoodImageEntity();
+            foodImage.setFoodImageUrl(imageUrl);
+            foodImage.setRestaurant(restaurantDAO.findById(restaurantId).orElse(null));
+            foodImage.setPost(postDAO.findById(postId).orElse(null));
+            foodImageDAO.save(foodImage);
+        }
+
     }
 
 }

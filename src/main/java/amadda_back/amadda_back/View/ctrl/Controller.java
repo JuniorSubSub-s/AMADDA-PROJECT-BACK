@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.WeatherResponseDTO;
+import amadda_back.amadda_back.View.service.ImageService;
 import amadda_back.amadda_back.View.service.OCRService;
 import amadda_back.amadda_back.View.service.PostService;
 import amadda_back.amadda_back.View.service.WeatherService;
@@ -34,6 +36,7 @@ public class Controller {
     private final PostService postService;
     private final WeatherService weatherService;
     private final OCRService ocrService;
+    private final ImageService imageService;
 
     @GetMapping("/postsByWeather")
     public ResponseEntity<List<PostResponseDTO>> getPostsByWeather(@RequestParam(name = "weather") String weather) {
@@ -57,6 +60,17 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByIds(@PathVariable(name = "postId") List<Integer> postId) {
         List<PostResponseDTO> posts = postService.getPostsByIds(postId);
         return ResponseEntity.ok(posts);
+    }
+
+    // 포스트 삭제 처리
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+        boolean deleted = postService.deletePost(postId);
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
+        } else {
+            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
+        }
     }
 
     @GetMapping("/posts/mood")
@@ -148,16 +162,6 @@ public class Controller {
         }
     }
 
-    // 이미지 저장
-    @PostMapping("/saveFoodImages")
-    public List<String> uploadImages(
-            @RequestParam("images") List<MultipartFile> images,
-            @RequestParam("postId") Integer postId) {
-
-        // 서비스로 전달하여 이미지 저장 및 경로 반환
-        return postService.saveImages(images, postId);
-    }
-
     // 레스토랑 저장
     @PostMapping("/saveRestaurant")
     public ResponseEntity<?> saveRestaurant(@RequestParam String restaurantName,
@@ -194,10 +198,21 @@ public class Controller {
             Integer restaurantId = (Integer) postData.get("restaurant_id");
             Integer userId = (Integer) postData.get("user_id");
             Integer themeId = (Integer) postData.get("theme_id");
+            List<String> topics = (List<String>) postData.get("clip");
+            List<String> tags = (List<String>) postData.get("tag");
 
             // 포스트 저장
-            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather,
-                    receiptVerification, restaurantId, userId, themeId);
+            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather, receiptVerification, restaurantId, userId, themeId);
+
+            // 주제 저장
+            if (topics != null && !topics.isEmpty()) {
+                postService.saveTopics(topics, savedPost.getPostId());
+            }
+
+            // 태그 저장
+            if (tags != null && !tags.isEmpty()) {
+                postService.savetags(tags, savedPost.getPostId());
+            }
 
             return ResponseEntity.ok(savedPost.getPostId()); // 저장된 게시물의 ID 반환
 
@@ -205,5 +220,16 @@ public class Controller {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("게시물 저장 중 오류가 발생했습니다.");
         }
+    }
+
+    @PostMapping("/saveFoodImages")
+    public ResponseEntity<?> uploadFile(@RequestParam("file") List<MultipartFile> images,
+            @RequestParam("postId") Integer postId,
+            @RequestParam("restaurantId") Integer restaurantId) {
+        // 이미지 파일 업로드
+        List<String> imageUrls = imageService.uploadFile(images);
+        postService.saveImage(imageUrls, postId, restaurantId);
+
+        return ResponseEntity.ok(imageUrls);
     }
 }

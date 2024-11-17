@@ -83,7 +83,7 @@ public class OCRService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
-        headers.set("X-OCR-SECRET", "c3RlZG1lZHdoUFl2cXZSaVN6ZXBmbVJlUmhGU0pSSmY=");
+        headers.set("X-OCR-SECRET", "UllsRHl1a05MY0tTbU9Wa0FrVGtIZHpHdUlZUEdxdVk=");
 
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("version", "V2");
