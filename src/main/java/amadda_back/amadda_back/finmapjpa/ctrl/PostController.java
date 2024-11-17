@@ -1,9 +1,7 @@
 package amadda_back.amadda_back.finmapjpa.ctrl;
 
-
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,7 @@ import java.util.List;
 public class PostController {
 
     private final RestaurantMapService restaurantMapService;
-    private final PostMapService PostMapService;
+    private final PostMapService postMapService;
 
     // 모든 레스토랑을 가져오는 API
     @GetMapping("/restaurants")
@@ -43,10 +41,11 @@ public class PostController {
         return new ResponseEntity<>(pinColors, HttpStatus.OK);
     }
 
-     // 특정 레스토랑의 포스트 정보를 가져오는 API
-     @GetMapping("/restaurants/{restaurantId}/posts")
-     public ResponseEntity<List<PostResponseMapDTO>> getPostsByRestaurantId(@PathVariable("restaurantId") Integer restaurantId) {
-         List<PostResponseMapDTO> posts = PostMapService.getPostsByRestaurantId(restaurantId);
-         return new ResponseEntity<>(posts, HttpStatus.OK);
-     }
+    // 특정 레스토랑의 포스트 정보를 가져오는 API
+    @GetMapping("/restaurants/{restaurantId}/posts")
+    public ResponseEntity<List<PostResponseMapDTO>> getPostsByRestaurantId(@PathVariable("restaurantId") Integer restaurantId) {
+        // PostMapService에서 포스트와 관련된 토픽 이름들과 태그 이름들을 포함하여 가져옴
+        List<PostResponseMapDTO> posts = postMapService.getPostsByRestaurantId(restaurantId);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 }

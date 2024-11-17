@@ -50,11 +50,16 @@ public class TokensService {
 
     //JWT 생성
     public String createJwt(String userEmail) {
+        Users user = usersRepository.findByUserEmail(userEmail)
+        .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+
+        Integer userId = user.getUserId();
         long now = System.currentTimeMillis() ;
         Date expiryDate = new Date(now + (60 * 60 * 1000)) ; //1시간
 
         return Jwts.builder()
             .setSubject(userEmail)
+            .claim("userId", userId)
             .setIssuedAt(new Date())
             .setExpiration(expiryDate)
             .signWith(SignatureAlgorithm.HS512, secretKey)

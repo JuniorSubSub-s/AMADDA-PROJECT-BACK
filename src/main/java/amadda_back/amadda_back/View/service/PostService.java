@@ -18,10 +18,13 @@ import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
 import amadda_back.amadda_back.View.dao.TagDAO;
 import amadda_back.amadda_back.View.dao.ThemeDAO;
+import amadda_back.amadda_back.View.dao.TopicDAO;
 import amadda_back.amadda_back.View.domain.entity.FoodImageEntity;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.View.domain.entity.TagEntity;
+import amadda_back.amadda_back.View.domain.entity.TopicEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
 import amadda_back.amadda_back.mypage.dao.UserRepository;
@@ -49,6 +52,9 @@ public class PostService {
 
     @Autowired
     private ThemeDAO themeDAO;
+
+    @Autowired
+    private TopicDAO topicDAO;
 
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
@@ -205,6 +211,36 @@ public class PostService {
         post.setUser(userRepository.findById(userId).orElse(null));
         post.setTheme(themeDAO.findById(themeId).orElse(null));
         return postDAO.save(post);
+    }
+
+    // 주제 저장
+    public void saveTopics(List<String> topics, Integer postId) {
+        // PostEntity 조회
+        PostEntity post = postDAO.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + postId));
+
+        // TopicEntity 저장
+        for (String topicName : topics) {
+            TopicEntity topic = new TopicEntity();
+            topic.setTopicName(topicName);
+            topic.setPost(post); // PostEntity와 연결
+            topicDAO.save(topic);
+        }
+    }
+
+    // 태그 저장
+    public void savetags(List<String> tags, Integer postId) {
+        // PostEntity 조회
+        PostEntity post = postDAO.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid postId: " + postId));
+
+        // TopicEntity 저장
+        for (String tagName : tags) {
+            TagEntity tag = new TagEntity();
+            tag.setTagName(tagName);
+            tag.setPost(post); // PostEntity와 연결
+            tagDAO.save(tag);
+        }
     }
 
     // 사용자 ID로 포스트를 가져오는 메서드
