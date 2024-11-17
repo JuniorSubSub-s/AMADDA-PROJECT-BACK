@@ -32,14 +32,24 @@ dependencies {
    implementation 'org.springframework.boot:spring-boot-starter-web'
    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
+   // 원준 추가
    // ModelMapper 의존성 추가
    implementation 'org.modelmapper:modelmapper:2.4.4'
+   // JSON 파싱을 위한 Jackson
+   implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
+   implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.2'
+
+   implementation files('libs/jxl-2.6.12.jar')
+   
+   // Lombok
    compileOnly 'org.projectlombok:lombok'
+   annotationProcessor 'org.projectlombok:lombok'
+
    developmentOnly 'org.springframework.boot:spring-boot-devtools'
    runtimeOnly 'mysql:mysql-connector-java:8.0.33'
    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-   annotationProcessor 'org.projectlombok:lombok'
+   
    testImplementation 'org.springframework.boot:spring-boot-starter-test'
    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -57,11 +67,10 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
+   // Webflux (선택: 비동기 API 호출)
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
+   // Thymeleaf (선택)
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-
 }
 
 tasks.named('test') {
