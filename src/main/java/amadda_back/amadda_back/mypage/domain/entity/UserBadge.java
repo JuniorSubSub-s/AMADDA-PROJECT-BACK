@@ -15,10 +15,10 @@ public class UserBadge {
     private Integer userBadgeId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
     @ManyToOne
-    @JoinColumn(name = "badge_id")
+    @JoinColumn(name = "badge_id", nullable = false)
     private Badge badge;
 }

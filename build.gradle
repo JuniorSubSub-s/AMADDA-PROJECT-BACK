@@ -61,6 +61,13 @@ dependencies {
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+   //임채은이 추가한 거
+
+   implementation 'com.amazonaws:aws-java-sdk-s3:1.11.238'
+   implementation 'javax.xml.bind:jaxb-api:2.3.1'
+   implementation 'org.glassfish.jaxb:jaxb-core:2.3.0'
+   implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
+
 
 }
 
@@ -71,3 +78,4 @@ tasks.named('test') {
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-parameters"
 }
+
