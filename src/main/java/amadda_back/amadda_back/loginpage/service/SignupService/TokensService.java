@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import amadda_back.amadda_back.loginpage.dto.SignupDto.KakaoTokenResponseDto;
@@ -102,6 +103,20 @@ public class TokensService {
         log.info("[newAccessToken] {}", newAccessToken);
         return newAccessToken;
     }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        Users user = usersRepository.findByUserRefreshToken(refreshToken)
+            .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레쉬 토큰"));
+
+        user.setUserAccessToken(null);
+        user.setUserRefreshToken(null);
+        user.setUserExpiresIn(null);
+
+        log.info("User after logout: {}", user);
+
+        usersRepository.save(user);
+}
 
 
 
