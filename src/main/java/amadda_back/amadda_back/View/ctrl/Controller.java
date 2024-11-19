@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
 import amadda_back.amadda_back.View.domain.entity.WeatherResponseDTO;
 import amadda_back.amadda_back.View.service.ImageService;
 import amadda_back.amadda_back.View.service.OCRService;
@@ -224,5 +225,11 @@ public class Controller {
         postService.saveImage(imageUrls, postId, restaurantId);
 
         return ResponseEntity.ok(imageUrls);
+    }
+
+    // 테마 불러오기
+    @GetMapping("/themeStore")
+    public List<ThemeEntity> getAllThemes() {
+        return postService.getAllThemes();
     }
 }
