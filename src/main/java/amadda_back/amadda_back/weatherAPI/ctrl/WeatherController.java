@@ -1,7 +1,16 @@
 package amadda_back.amadda_back.weatherAPI.ctrl;
 
-import jxl.Sheet;
-import jxl.Workbook;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,19 +26,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import amadda_back.amadda_back.weatherAPI.domain.entity.WeatherDTO;
 import amadda_back.amadda_back.weatherAPI.service.GetWeatherService;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import jxl.Sheet;
+import jxl.Workbook;
 
 @RestController
 @RequestMapping("/api")
@@ -54,20 +52,20 @@ public class WeatherController {
 
     @GetMapping("/weatherDetails")
     public ResponseEntity<Object> getWeather(
-            @RequestParam(name="lat") double lat, 
-            @RequestParam(name="lon") double lon) {
-        
+            @RequestParam(name = "lat") double lat,
+            @RequestParam(name = "lon") double lon) {
+
         System.out.println("client end point : /api/weather1");
         System.out.println("serviceKey : " + apiKey);
         System.out.println("params: " + lat + ", " + lon);
 
         // 날씨 API URL 생성
-        String requestURL = callBackUrl + 
+        String requestURL = callBackUrl +
                 "?lat=" + lat +
                 "&lon=" + lon +
                 "&appid=" + apiKey +
                 "&units=metric";
-        
+
         System.out.println("url check : " + requestURL);
 
         HttpURLConnection http = null;
@@ -80,16 +78,17 @@ public class WeatherController {
             http = (HttpURLConnection) url.openConnection(); // HTTP 연결 설정
             System.out.println("http connection : " + http);
             int code = http.getResponseCode(); // HTTP 응답 코드 확인
-            System.out.println("http response code : " + code); //200이 나와야 정상
+            System.out.println("http response code : " + code); // 200이 나와야 정상
 
-            if(code == 200) {
-                stream = http.getInputStream(); //응답데이터를 InputStream으로 읽음
+            if (code == 200) {
+                stream = http.getInputStream(); // 응답데이터를 InputStream으로 읽음
                 result = readString(stream);
 
                 List<WeatherDTO> weatherList = getWeatherService.parseJson(result);
-                System.out.println(weatherList);;
+                System.out.println(weatherList);
+                ;
 
-                if(weatherList != null && !weatherList.isEmpty()) {
+                if (weatherList != null && !weatherList.isEmpty()) {
                     // 날씨 데이터가 있으면 리스트 초기화
                     return new ResponseEntity<>(weatherList, HttpStatus.OK);
                 } else {
@@ -99,12 +98,12 @@ public class WeatherController {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(http != null) {
+            if (http != null) {
                 http.disconnect();
             }
         }
 
-        if(list == null || list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             Map<String, String> map = new HashMap<>();
             map.put("info", "저장된 데이터가 존재하지 않습니다.");
             return new ResponseEntity<>(map, HttpStatus.OK);
@@ -120,11 +119,11 @@ public class WeatherController {
         BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
         String input = null;
         StringBuilder result = new StringBuilder();
-        while((input = br.readLine()) != null) {
+        while ((input = br.readLine()) != null) {
             result.append(input).append("\n\r");
         }
         br.close();
-        
+
         return result.toString();
     }
 
@@ -153,21 +152,21 @@ public class WeatherController {
             urlBuilder.append("&").append(URLEncoder.encode("base_time", "UTF-8")).append("=")
                     .append(URLEncoder.encode(baseTime, "UTF-8"));
             urlBuilder.append("&").append(URLEncoder.encode("dataType", "UTF-8")).append("=").append("JSON");
-    
+
             String apiUrl = urlBuilder.toString();
             System.out.println("API URL: " + apiUrl);
-    
+
             RestTemplate restTemplate = new RestTemplate();
             String jsonResponse = restTemplate.getForObject(new URI(apiUrl), String.class);
-    
+
             // 응답이 올바른 JSON인지 확인
             if (jsonResponse == null || !jsonResponse.trim().startsWith("{")) {
                 System.err.println("Invalid JSON response: " + jsonResponse);
                 return "Error: Invalid response from weather API.";
             }
-    
+
             System.out.println("API Response: " + jsonResponse);
-    
+
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readTree(jsonResponse); // JSON 데이터로 변환하여 반환
         } catch (Exception e) {
