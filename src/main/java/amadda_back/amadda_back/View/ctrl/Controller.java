@@ -117,7 +117,8 @@ public class Controller {
     }
 
     @GetMapping("/weatherByLocation")
-    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(@RequestParam(name = "lat") double lat,
+    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(
+            @RequestParam(name = "lat") double lat,
             @RequestParam(name = "lon") double lon) {
         try {
             return ResponseEntity.ok(weatherService.getWeatherByLocation(lat, lon));
