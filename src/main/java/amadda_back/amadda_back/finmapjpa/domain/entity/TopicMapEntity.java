@@ -25,7 +25,7 @@ public class TopicMapEntity {
     private Long topicId; 
 
     @Column(name = "topic_name")
-    private String topicName; // 음식 이미지 URL
+    private String topicName;
 
     @ManyToOne
     @JoinColumn(name = "post_id")  // 외래키 설정

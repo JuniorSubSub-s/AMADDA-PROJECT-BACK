@@ -2,9 +2,9 @@ package amadda_back.amadda_back.mypage.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import amadda_back.amadda_back.mypage.domain.entity.Badge;
 import amadda_back.amadda_back.mypage.domain.entity.UserBadge;

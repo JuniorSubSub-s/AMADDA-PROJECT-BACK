@@ -165,10 +165,10 @@ public class Controller {
 
     // 레스토랑 저장
     @PostMapping("/saveRestaurant")
-    public ResponseEntity<?> saveRestaurant(@RequestParam String restaurantName,
-            @RequestParam String restaurantAddress,
-            @RequestParam Double locationLatitude,
-            @RequestParam Double locationLongitude) {
+    public ResponseEntity<?> saveRestaurant(@RequestParam(name = "restaurantName") String restaurantName,
+            @RequestParam(name = "restaurantAddress") String restaurantAddress,
+            @RequestParam(name = "locationLatitude") Double locationLatitude,
+            @RequestParam(name = "locationLongitude") Double locationLongitude) {
         try {
             RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress,
                     locationLatitude, locationLongitude);
@@ -224,7 +224,7 @@ public class Controller {
     }
 
     @PostMapping("/saveFoodImages")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") List<MultipartFile> images,
+    public ResponseEntity<?> uploadFile(@RequestParam(name = "file") List<MultipartFile> images,
             @RequestParam("postId") Integer postId,
             @RequestParam("restaurantId") Integer restaurantId) {
         // 이미지 파일 업로드
