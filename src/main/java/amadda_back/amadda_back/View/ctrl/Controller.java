@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
+import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
 import amadda_back.amadda_back.View.domain.entity.WeatherResponseDTO;
 import amadda_back.amadda_back.View.service.ImageService;
 import amadda_back.amadda_back.View.service.OCRService;
@@ -79,9 +80,11 @@ public class Controller {
     }
 
     // @GetMapping("/posts/privacy")
-    // public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam PostResponseDTO.Privacy privacy) {
-    //     return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
+    // public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam
+    // PostResponseDTO.Privacy privacy) {
+    // return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
     // }
+
     @GetMapping("/posts/pinColor")
     public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam(name = "color") String color) {
         return ResponseEntity.ok(postService.getPostsByColor(color));
@@ -98,7 +101,8 @@ public class Controller {
     }
 
     @GetMapping("/posts/topics")
-    public ResponseEntity<List<PostEntity>> getPostsByTopics(@RequestParam(name = "topicNames") List<String> topicNames) {
+    public ResponseEntity<List<PostEntity>> getPostsByTopics(
+            @RequestParam(name = "topicNames") List<String> topicNames) {
         return ResponseEntity.ok(postService.getPostsByTopics(topicNames));
     }
 
@@ -108,12 +112,15 @@ public class Controller {
     }
 
     @GetMapping("/posts/verification")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(@RequestParam(name = "receiptVerification") Boolean receiptVerification) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(
+            @RequestParam(name = "receiptVerification") Boolean receiptVerification) {
         return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
     }
 
     @GetMapping("/weatherByLocation")
-    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(@RequestParam(name = "lat") double lat, @RequestParam(name = "lon") double lon) {
+    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(
+            @RequestParam(name = "lat") double lat,
+            @RequestParam(name = "lon") double lon) {
         try {
             return ResponseEntity.ok(weatherService.getWeatherByLocation(lat, lon));
         } catch (Exception e) {
@@ -128,7 +135,8 @@ public class Controller {
     }
 
     @GetMapping("/foodImages")
-    public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(@RequestParam(name = "postIds") List<Integer> postIds) {
+    public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(
+            @RequestParam(name = "postIds") List<Integer> postIds) {
         return ResponseEntity.ok(postService.getFirstFoodImagesByPostIds(postIds));
     }
 
@@ -142,7 +150,7 @@ public class Controller {
         return ResponseEntity.ok(postService.getTagsByPostId(postId));
     }
 
-    //영수증 인증
+    // 영수증 인증
     @PostMapping("/process")
     public ResponseEntity<Boolean> processOcr(@RequestParam("file") MultipartFile file,
             @RequestParam("storeName") String storeName,
@@ -152,18 +160,19 @@ public class Controller {
             boolean isStoreInfoFound = ocrService.checkStoreInfoInOcr(file, storeName, storeAddress);
             return ResponseEntity.ok(isStoreInfoFound);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(false);  // 오류 발생 시 false 반환
+            return ResponseEntity.status(500).body(false); // 오류 발생 시 false 반환
         }
     }
 
-    //레스토랑 저장
+    // 레스토랑 저장
     @PostMapping("/saveRestaurant")
     public ResponseEntity<?> saveRestaurant(@RequestParam(name = "restaurantName") String restaurantName,
             @RequestParam(name = "restaurantAddress") String restaurantAddress,
             @RequestParam(name = "locationLatitude") Double locationLatitude,
             @RequestParam(name = "locationLongitude") Double locationLongitude) {
         try {
-            RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+            RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress,
+                    locationLatitude, locationLongitude);
             if (restaurant != null) {
                 // 레스토랑 ID 반환
                 return ResponseEntity.ok(restaurant.getRestaurantId());
@@ -176,7 +185,7 @@ public class Controller {
         }
     }
 
-    //게시물 저장
+    // 게시물 저장
     @PostMapping("/savePost")
     public ResponseEntity<?> savePost(@RequestBody Map<String, Object> postData) {
         try {
@@ -224,5 +233,11 @@ public class Controller {
         postService.saveImage(imageUrls, postId, restaurantId);
 
         return ResponseEntity.ok(imageUrls);
+    }
+
+    // 테마 불러오기
+    @GetMapping("/themeStore")
+    public List<ThemeEntity> getAllThemes() {
+        return postService.getAllThemes();
     }
 }

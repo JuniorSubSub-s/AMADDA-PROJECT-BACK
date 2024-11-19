@@ -24,6 +24,7 @@ import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.TagEntity;
+import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
 import amadda_back.amadda_back.View.domain.entity.TopicEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
@@ -79,12 +80,6 @@ public class PostService {
         return convertToPostResponseDTO(postEntities);
     }
 
-    // public List<PostResponseDTO> getPostsByPrivacy(PostResponseDTO.Privacy privacy) {
-    //     // Privacy 타입을 PostEntity.Privacy로 변환
-    //     PostEntity.Privacy entityPrivacy = PostEntity.Privacy.valueOf(privacy.name());
-    //     List<PostEntity> postEntities = postDAO.findPostsByPrivacy(entityPrivacy);
-    //     return convertToPostResponseDTO(postEntities);
-    // }
     public List<PostResponseDTO> getPostsByColor(String color) {
         if ("Total".equals(color)) {
             List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
@@ -272,6 +267,11 @@ public class PostService {
             foodImageDAO.save(foodImage);
         }
 
+    }
+
+    // 테마 불러오기
+    public List<ThemeEntity> getAllThemes() {
+        return themeDAO.findAll();
     }
 
 }
