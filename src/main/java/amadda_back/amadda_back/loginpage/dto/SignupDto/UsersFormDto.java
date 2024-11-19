@@ -39,4 +39,6 @@ public class UsersFormDto {
         
         private String user_access_token ;
 
+        private Integer user_expires_in ;
+
 }

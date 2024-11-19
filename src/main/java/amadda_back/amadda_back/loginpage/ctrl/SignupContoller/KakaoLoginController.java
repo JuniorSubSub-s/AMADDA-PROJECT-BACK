@@ -59,6 +59,8 @@ public class KakaoLoginController {
         }
 
         // 4. 메인페이지로 이동
-        return new ModelAndView("redirect:http://localhost:3000/amadda") ;
+        return new ModelAndView("redirect:http://localhost:3000/amadda?jwt=" + tokens.getAccessToken() +
+        "&refreshToken=" + tokens.getRefreshToken() +
+        "&accessToken=" + tokens.getAccessToken()); 
     }
 }
