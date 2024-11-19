@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 
 // @CrossOrigin(origins = "*")
-@RestController("singupUserController")
+@RestController("signupUserController")
 @RequestMapping("/ama")
 
 @RequiredArgsConstructor
@@ -27,14 +27,18 @@ public class UserController {
     // private final UsersFormDto usersFormDto ;
     // private final PasswordEncoder passwordEncoder;
 
+    //회원가입
     @PostMapping(value = "/new")
     public ResponseEntity<Users> newUsers(@Valid @RequestBody UsersFormDto usersFormDto) {
+
         Users users = userService.createUsers(usersFormDto) ;
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    //중복회원 확인
     @PostMapping(value = "/check-duplicate")
     public ResponseEntity<Boolean> duplicateButton(@Valid @RequestBody UsersFormDto usersFormDto) {
+        
         boolean flag = userService.checkDuplicate(usersFormDto.getUser_email()) ;
         System.out.println("flag : " + flag);
         return new ResponseEntity<>(flag, HttpStatus.OK) ;
