@@ -124,6 +124,7 @@ public class WeatherController {
             result.append(input).append("\n\r");
         }
         br.close();
+        
         return result.toString();
     }
 
