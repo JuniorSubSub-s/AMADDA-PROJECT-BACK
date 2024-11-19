@@ -32,4 +32,13 @@ public class ThemeEntity {
 
     @Column(name = "theme_image")
     private String themeImage;
+
+    @Column(name = "rating")
+    private Integer rating;
+
+    @Column(name = "image_number")
+    private Integer imageNumber;
+
+    @Column(name = "discount")
+    private Integer discount;
 }
