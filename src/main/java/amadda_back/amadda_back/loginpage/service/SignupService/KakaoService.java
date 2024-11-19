@@ -101,6 +101,43 @@ public class KakaoService {
                 .block(); //동기 코드처럼 작동하도록 바꿈(코드가 간단해짐, 예외처리하기 더 간단함)
     }
 
+    public KakaoTokenResponseDto getTokensForSignup(String code) {
+        WebClient webClient = WebClient.create(KAUTH_TOKEN_URL_HOST); //웹으로 API를 호출하기 위해 사용되는 Http Client 모듈 중 하나
+        
+        //카카오 API를 호출해 kakaoTokenResponseDto Json으로 반환된
+        /*
+         {
+            "access_token": "new_access_token_value",
+            "expires_in": 3600,
+            "refresh_token": "new_refresh_token_value",
+            "refresh_token_expires_in": 2592000
+        }
+         */
+        return webClient.post() //JSON 형식으로 반환
+                .uri(uriBuilder -> uriBuilder
+                        .path("/oauth/token")
+                        .queryParam("grant_type", "authorization_code")
+                        .queryParam("client_id", clientId)
+                        .queryParam("redirect_uri", "http://localhost:7777/auth/kakao/signup/callback")
+                        .queryParam("code", code)
+                        .build())
+                .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
+                .retrieve() //받은 응답 디코딩(body를 받아 디코딩하는 메서드)
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> { //예외 상태 커스텀
+                    log.error("4xx error occurred while fetching tokens");
+                    return Mono.error(new RuntimeException("Invalid Parameter: " + clientResponse.statusCode()));
+                })
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> { //예외 상태 커스텀
+                    log.error("5xx error occurred while fetching tokens");
+                    return Mono.error(new RuntimeException("Internal Server Error: " + clientResponse.statusCode()));
+                })
+                .bodyToMono(KakaoTokenResponseDto.class) //body의 데이터로만 받고싶다면 사용하는 메서드
+                //.toEntity status, headers, body포함하는 ResponseEntity 타입으로 받을 수 있음
+                .block(); //동기 코드처럼 작동하도록 바꿈(코드가 간단해짐, 예외처리하기 더 간단함)
+    }
+
+    
+
     //엑세스 토큰으로 user정보 가져오는 함수
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
 
@@ -181,4 +218,6 @@ public class KakaoService {
     
         return randomCode.toString();
     }
+
+    
 }
