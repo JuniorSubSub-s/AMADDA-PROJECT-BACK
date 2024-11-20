@@ -26,23 +26,21 @@ import reactor.core.publisher.Mono;
 @Service
 public class KakaoService {
 
-    
-
-    private String clientId ;
-    private final String KAUTH_TOKEN_URL_HOST ;
-    private final String KAUTH_USER_URL_HOST ;
+    private String clientId;
+    private final String KAUTH_TOKEN_URL_HOST;
+    private final String KAUTH_USER_URL_HOST;
 
     @Autowired
-    public KakaoService(@Value("${kakao.client_id}")  String clientId) {
-        this.clientId = clientId ;
+    public KakaoService(@Value("${kakao.client_id}") String clientId) {
+        this.clientId = clientId;
         KAUTH_TOKEN_URL_HOST = "https://kauth.kakao.com";
         KAUTH_USER_URL_HOST = "https://kapi.kakao.com";
     }
 
-    //코드를 이용해 토큰 생성(토큰으로 액세스 토큰, 리프레쉬 토큰 만드는데 쓰이는 메서드)
+    // 코드를 이용해 토큰 생성(토큰으로 액세스 토큰, 리프레쉬 토큰 만드는데 쓰이는 메서드)
     public KakaoTokenResponseDto getTokens(String code) {
         WebClient webClient = WebClient.create(KAUTH_TOKEN_URL_HOST);
-    
+
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path("/oauth/token")
@@ -65,20 +63,20 @@ public class KakaoService {
                 .block();
     }
 
-    //auth/kakao/callback 로그인을 이용한 토큰 생성 메서드
+    // auth/kakao/callback 로그인을 이용한 토큰 생성 메서드
     public KakaoTokenResponseDto getTokensForLogin(String code) {
-        WebClient webClient = WebClient.create(KAUTH_TOKEN_URL_HOST); //웹으로 API를 호출하기 위해 사용되는 Http Client 모듈 중 하나
-        
-        //카카오 API를 호출해 kakaoTokenResponseDto Json으로 반환된
+        WebClient webClient = WebClient.create(KAUTH_TOKEN_URL_HOST); // 웹으로 API를 호출하기 위해 사용되는 Http Client 모듈 중 하나
+
+        // 카카오 API를 호출해 kakaoTokenResponseDto Json으로 반환된
         /*
-         {
-            "access_token": "new_access_token_value",
-            "expires_in": 3600,
-            "refresh_token": "new_refresh_token_value",
-            "refresh_token_expires_in": 2592000
-        }
+         * {
+         * "access_token": "new_access_token_value",
+         * "expires_in": 3600,
+         * "refresh_token": "new_refresh_token_value",
+         * "refresh_token_expires_in": 2592000
+         * }
          */
-        return webClient.post() //JSON 형식으로 반환
+        return webClient.post() // JSON 형식으로 반환
                 .uri(uriBuilder -> uriBuilder
                         .path("/oauth/token")
                         .queryParam("grant_type", "authorization_code")
@@ -87,94 +85,96 @@ public class KakaoService {
                         .queryParam("code", code)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
-                .retrieve() //받은 응답 디코딩(body를 받아 디코딩하는 메서드)
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> { //예외 상태 커스텀
+                .retrieve() // 받은 응답 디코딩(body를 받아 디코딩하는 메서드)
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> { // 예외 상태 커스텀
                     log.error("4xx error occurred while fetching tokens");
                     return Mono.error(new RuntimeException("Invalid Parameter: " + clientResponse.statusCode()));
                 })
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> { //예외 상태 커스텀
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> { // 예외 상태 커스텀
                     log.error("5xx error occurred while fetching tokens");
                     return Mono.error(new RuntimeException("Internal Server Error: " + clientResponse.statusCode()));
                 })
-                .bodyToMono(KakaoTokenResponseDto.class) //body의 데이터로만 받고싶다면 사용하는 메서드
-                //.toEntity status, headers, body포함하는 ResponseEntity 타입으로 받을 수 있음
-                .block(); //동기 코드처럼 작동하도록 바꿈(코드가 간단해짐, 예외처리하기 더 간단함)
+                .bodyToMono(KakaoTokenResponseDto.class) // body의 데이터로만 받고싶다면 사용하는 메서드
+                // .toEntity status, headers, body포함하는 ResponseEntity 타입으로 받을 수 있음
+                .block(); // 동기 코드처럼 작동하도록 바꿈(코드가 간단해짐, 예외처리하기 더 간단함)
     }
 
     public KakaoTokenResponseDto getTokensForSignup(String code) {
-        WebClient webClient = WebClient.create(KAUTH_TOKEN_URL_HOST); //웹으로 API를 호출하기 위해 사용되는 Http Client 모듈 중 하나
-        
-        //카카오 API를 호출해 kakaoTokenResponseDto Json으로 반환된
+        WebClient webClient = WebClient.create(KAUTH_TOKEN_URL_HOST); // 웹으로 API를 호출하기 위해 사용되는 Http Client 모듈 중 하나
+
+        // 카카오 API를 호출해 kakaoTokenResponseDto Json으로 반환된
         /*
-         {
-            "access_token": "new_access_token_value",
-            "expires_in": 3600,
-            "refresh_token": "new_refresh_token_value",
-            "refresh_token_expires_in": 2592000
-        }
+         * {
+         * "access_token": "new_access_token_value",
+         * "expires_in": 3600,
+         * "refresh_token": "new_refresh_token_value",
+         * "refresh_token_expires_in": 2592000
+         * }
          */
-        return webClient.post() //JSON 형식으로 반환
+        return webClient.post() // JSON 형식으로 반환
                 .uri(uriBuilder -> uriBuilder
                         .path("/oauth/token")
                         .queryParam("grant_type", "authorization_code")
                         .queryParam("client_id", clientId)
                         .queryParam("redirect_uri", "http://localhost:7777/auth/kakao/signup/callback")
                         .queryParam("code", code)
-                        .build())
+                        .build()) // 쿼리 문자열로 수신(KAKAO에서 받음)
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
-                .retrieve() //받은 응답 디코딩(body를 받아 디코딩하는 메서드)
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> { //예외 상태 커스텀
+                .retrieve() // 받은 응답 디코딩(body를 받아 디코딩하는 메서드)
+                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> { // 예외 상태 커스텀
                     log.error("4xx error occurred while fetching tokens");
                     return Mono.error(new RuntimeException("Invalid Parameter: " + clientResponse.statusCode()));
                 })
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> { //예외 상태 커스텀
+                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> { // 예외 상태 커스텀
                     log.error("5xx error occurred while fetching tokens");
                     return Mono.error(new RuntimeException("Internal Server Error: " + clientResponse.statusCode()));
                 })
-                .bodyToMono(KakaoTokenResponseDto.class) //body의 데이터로만 받고싶다면 사용하는 메서드
-                //.toEntity status, headers, body포함하는 ResponseEntity 타입으로 받을 수 있음
-                .block(); //동기 코드처럼 작동하도록 바꿈(코드가 간단해짐, 예외처리하기 더 간단함)
+                .bodyToMono(KakaoTokenResponseDto.class) // body의 데이터로만 받고싶다면 사용하는 메서드
+                // .toEntity status, headers, body포함하는 ResponseEntity 타입으로 받을 수 있음
+                .block(); // 동기 코드처럼 작동하도록 바꿈(코드가 간단해짐, 예외처리하기 더 간단함)
     }
 
-    
-
-    //엑세스 토큰으로 user정보 가져오는 함수
+    // 엑세스 토큰으로 user정보 가져오는 함수
     public KakaoUserInfoResponseDto getUserInfo(String accessToken) {
 
         KakaoUserInfoResponseDto userInfo = WebClient.create(KAUTH_USER_URL_HOST)
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .scheme("https")
-                        .path("/v2/user/me") //이 엔드포인트로 토큰을 통해 사용자 정보를 조회
+                        .path("/v2/user/me") // 이 엔드포인트로 토큰을 통해 사용자 정보를 조회
                         .build(true))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // access token 인가
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
-                .retrieve()
-                //TODO : Custom Exception
-                .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
-                .onStatus(HttpStatusCode::is5xxServerError, clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
-                .bodyToMono(KakaoUserInfoResponseDto.class)
-                .block();
+                .retrieve()// 받은 응답 디코딩(body를 받아 디코딩하는 메서드)
+                // TODO : Custom Exception
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        clientResponse -> Mono.error(new RuntimeException("Invalid Parameter")))
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        clientResponse -> Mono.error(new RuntimeException("Internal Server Error")))
+                .bodyToMono(KakaoUserInfoResponseDto.class) // MONO(0개나 1개 정보 body로 전달)
+                .block(); // 동기로 전환(수행 끝난후 값전달)
 
         log.info("[ Kakao Service ] Auth ID ---> {} ", userInfo.getId());
         log.info("[ Kakao Service ] NickName ---> {} ", userInfo.getKakaoAccount().getProfile().getNickName());
-        log.info("[ Kakao Service ] ProfileImageUrl ---> {} ", userInfo.getKakaoAccount().getProfile().getProfileImageUrl());
-        //로그로 출력
-        return userInfo; //사용자정보 객체 반환
+        log.info("[ Kakao Service ] ProfileImageUrl ---> {} ",
+                userInfo.getKakaoAccount().getProfile().getProfileImageUrl());
+        // 로그로 출력
+        return userInfo; // 사용자정보 객체 반환
     }
 
-    //카카오에서 유저dto로
-   public UsersFormDto mapToUsersFormDto(KakaoUserInfoResponseDto userInfo) {
-        return UsersFormDto     .builder()
-                                .user_email(userInfo.getKakaoAccount().getEmail())
-                                .user_nickname(userInfo.getKakaoAccount().getProfile().getNickName())
-                                .user_phonenumber(normalPhoneNum(userInfo.getKakaoAccount().getPhoneNumber())) //82+ 010으로 정상화
-                                .user_gender(enumGender(userInfo.getKakaoAccount().getGender())) //enum값으로 바꾸기
-                                .user_name(userInfo.getKakaoAccount().getName())
-                                .user_nation(1) // 카카오톡 쓰면 내국인이겠지
-                                .user_birth(sumBirthDate(userInfo.getKakaoAccount().getBirthYear(), userInfo.getKakaoAccount().getBirthDay()))
-                                .user_pwd(generateRandomCode()) //일단은 더미데이터로(카카오톡 쓰면 비번이 필요가 없음)
-                                .build();
+    // 카카오에서 유저dto로
+    public UsersFormDto mapToUsersFormDto(KakaoUserInfoResponseDto userInfo) {
+        return UsersFormDto.builder()
+                .user_email(userInfo.getKakaoAccount().getEmail())
+                .user_nickname(userInfo.getKakaoAccount().getProfile().getNickName())
+                .user_phonenumber(normalPhoneNum(userInfo.getKakaoAccount().getPhoneNumber())) // 82+ 010으로 정상화
+                .user_gender(enumGender(userInfo.getKakaoAccount().getGender())) // enum값으로 바꾸기
+                .user_name(userInfo.getKakaoAccount().getName())
+                .user_nation(1) // 카카오톡 쓰면 내국인이겠지
+                .user_birth(sumBirthDate(userInfo.getKakaoAccount().getBirthYear(),
+                        userInfo.getKakaoAccount().getBirthDay()))
+                .user_pwd(generateRandomCode()) // 일단은 더미데이터로(카카오톡 쓰면 비번이 필요가 없음)
+                .build();
     }
 
     // 성별을 Gender Enum으로 변환
@@ -201,23 +201,23 @@ public class KakaoService {
             return null;
         }
     }
-    //폰넘버 정상화
+
+    // 폰넘버 정상화
     private String normalPhoneNum(String phoneNumber) {
-            return phoneNumber.replace("+82 10-", "010-");
+        return phoneNumber.replace("+82 10-", "010-");
     }
 
-    //비밀번호 랜덤생성
+    // 비밀번호 랜덤생성
     private String generateRandomCode() {
         StringBuilder randomCode = new StringBuilder();
         Random random = new Random();
-    
+
         for (int i = 0; i < 20; i++) {
             int digit = random.nextInt(10); // 0부터 9까지의 랜덤 숫자
             randomCode.append(digit);
         }
-    
+
         return randomCode.toString();
     }
 
-    
 }

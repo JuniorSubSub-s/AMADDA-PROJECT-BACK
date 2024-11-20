@@ -34,6 +34,13 @@ public class TokensService {
         this.usersRepository = usersRepository;
     }
 
+    // RefreshTime Expire유효기간 Integer -> Date로 변환
+    public Date convertToExpireDate(Integer expiresIn) {
+        // 현재 시간에 초를 밀리초로 변환해 더하기
+        long expirationTimeMillis = System.currentTimeMillis() + (expiresIn * 1000L);
+        return new Date(expirationTimeMillis);
+    }
+
     // 1. Refresh Token 저장 및 갱신
     public void updateRefreshToken(String userEmail, String refreshToken, Integer refreshTokenExpiresIn) {
         Users user = usersRepository.findByUserEmail(userEmail)
@@ -59,8 +66,8 @@ public class TokensService {
 
         return Jwts.builder()
                 .setSubject(userEmail)
-                .claim("userId", userId)
-                .claim("userName", userName)
+                .claim("userId", userId) // 유저 아이디
+                .claim("userName", userName) // 유저 이름
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, secretKey)
