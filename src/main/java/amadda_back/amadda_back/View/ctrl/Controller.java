@@ -93,7 +93,8 @@ public class Controller {
     }
 
     @GetMapping("/posts/topics")
-    public ResponseEntity<List<PostEntity>> getPostsByTopics(@RequestParam(name = "topicNames") List<String> topicNames) {
+    public ResponseEntity<List<PostEntity>> getPostsByTopics(
+            @RequestParam(name = "topicNames") List<String> topicNames) {
         return ResponseEntity.ok(postService.getPostsByTopics(topicNames));
     }
 
@@ -103,7 +104,8 @@ public class Controller {
     }
 
     @GetMapping("/posts/verification")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(@RequestParam(name = "receiptVerification") Boolean receiptVerification) {
+    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(
+            @RequestParam(name = "receiptVerification") Boolean receiptVerification) {
         return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
     }
 
@@ -113,7 +115,8 @@ public class Controller {
     }
 
     @GetMapping("/foodImages")
-    public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(@RequestParam(name = "postIds") List<Integer> postIds) {
+    public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(
+            @RequestParam(name = "postIds") List<Integer> postIds) {
         return ResponseEntity.ok(postService.getFirstFoodImagesByPostIds(postIds));
     }
 
@@ -127,7 +130,7 @@ public class Controller {
         return ResponseEntity.ok(postService.getTagsByPostId(postId));
     }
 
-    //영수증 인증
+    // 영수증 인증
     @PostMapping("/process")
     public ResponseEntity<Boolean> processOcr(@RequestParam("file") MultipartFile file,
             @RequestParam("storeName") String storeName,
@@ -137,18 +140,19 @@ public class Controller {
             boolean isStoreInfoFound = ocrService.checkStoreInfoInOcr(file, storeName, storeAddress);
             return ResponseEntity.ok(isStoreInfoFound);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body(false);  // 오류 발생 시 false 반환
+            return ResponseEntity.status(500).body(false); // 오류 발생 시 false 반환
         }
     }
 
-    //레스토랑 저장
+    // 레스토랑 저장
     @PostMapping("/saveRestaurant")
     public ResponseEntity<?> saveRestaurant(@RequestParam(name = "restaurantName") String restaurantName,
             @RequestParam(name = "restaurantAddress") String restaurantAddress,
             @RequestParam(name = "locationLatitude") Double locationLatitude,
             @RequestParam(name = "locationLongitude") Double locationLongitude) {
         try {
-            RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+            RestaurantEntity restaurant = postService.addRestaurantIfNotExists(restaurantName, restaurantAddress,
+                    locationLatitude, locationLongitude);
             if (restaurant != null) {
                 // 레스토랑 ID 반환
                 return ResponseEntity.ok(restaurant.getRestaurantId());
@@ -161,7 +165,7 @@ public class Controller {
         }
     }
 
-    //게시물 저장
+    // 게시물 저장
     @PostMapping("/savePost")
     public ResponseEntity<?> savePost(@RequestBody Map<String, Object> postData) {
         try {

@@ -15,7 +15,6 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
-
 @RestController
 public class IdentifyController {
 
@@ -24,12 +23,11 @@ public class IdentifyController {
 
     public IdentifyController() {
         // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
-        this.messageService = NurigoApp.INSTANCE.initialize("NCS5MINUGNHLIDCH", "CBI1C0OSZYEMOTUZCAUUZII3YIFC66N4", "https://api.coolsms.co.kr");
+        this.messageService = NurigoApp.INSTANCE.initialize("NCS5MINUGNHLIDCH", "CBI1C0OSZYEMOTUZCAUUZII3YIFC66N4",
+                "https://api.coolsms.co.kr");
     }
 
-    /**
-     * 단일 메시지 발송 예제
-     */
+    // 메시지 발송
     @PostMapping("/send-one")
     public SingleMessageSentResponse sendOne(@RequestParam("user_phonenumber") String phoneNumber) {
         Message message = new Message();
@@ -44,24 +42,25 @@ public class IdentifyController {
             // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
             phoneNumAndCode.put(phoneNumber, randomCode);
             messageService.send(message);
-            } catch (NurigoMessageNotReceivedException exception) {
-                // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
-                System.out.println(exception.getFailedMessageList());
-                System.out.println(exception.getMessage());
-            } catch (Exception exception) {
-                System.out.println(exception.getMessage());
-            }
+        } catch (NurigoMessageNotReceivedException exception) {
+            // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
+            System.out.println(exception.getFailedMessageList());
+            System.out.println(exception.getMessage());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
 
-          SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-          System.out.println(response);
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+        System.out.println(response);
 
-          return response;
-        
+        return response;
+
     }
 
     // 인증번호 검증 엔드포인트
     @PostMapping("/identify-code")
-    public Boolean identifyCode(@RequestParam("user_phonenumber") String phoneNumber, @RequestParam("identify_num") String identifyNum) {
+    public Boolean identifyCode(@RequestParam("user_phonenumber") String phoneNumber,
+            @RequestParam("identify_num") String identifyNum) {
         String savedCode = phoneNumAndCode.get(phoneNumber);
 
         if (savedCode != null && savedCode.equals(identifyNum)) {
@@ -75,12 +74,12 @@ public class IdentifyController {
     private String generateRandomCode(int length) {
         StringBuilder randomCode = new StringBuilder();
         Random random = new Random();
-    
+
         for (int i = 0; i < length; i++) {
             int digit = random.nextInt(10); // 0부터 9까지의 랜덤 숫자
             randomCode.append(digit);
         }
-    
+
         return randomCode.toString();
     }
 }

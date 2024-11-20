@@ -23,7 +23,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/assets/**")
                 .addResourceLocations("file:///C:/finalproject/AMADDA-PROJECT-BACK/src/main/resources/static/img/profile/");
     }
-
-
 }
 
