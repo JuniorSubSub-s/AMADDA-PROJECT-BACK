@@ -113,14 +113,14 @@ public class UserService {
 
     // 파일 업로드 처리 메서드 추가
     public void uploadProfileImage(int userId, MultipartFile file) throws Exception {
-        // 파일을 저장하고 경로를 얻기
-        String filePath = fileService.saveFile(file);
+        // 파일을 클라우드 스토리지에 업로드하고 경로를 얻기
+        String cloudFilePath = fileService.saveFile(file);
 
         // 파일 경로를 사용자 프로필 이미지에 저장
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. ID: " + userId));
         
-        user.setProfileImage(filePath); // 저장된 파일 경로를 프로필 이미지로 설정
+        user.setProfileImage(cloudFilePath); // 클라우드 URL을 프로필 이미지로 설정
         userRepository.save(user); // 변경 사항 저장
     }
 

@@ -57,7 +57,7 @@
             parameterType="amadda_back.amadda_back.calendarpage.domain.EventRequestDTO">
         UPDATE calendar
         SET    title = #{ title }, content = #{ content }, color = #{ color }, address = #{ address }
-        WHERE  cal_id    = #{ id }
+        WHERE  cal_id    = #{ calId }
     </update>
 
     <!-- savehistoryAll --> 

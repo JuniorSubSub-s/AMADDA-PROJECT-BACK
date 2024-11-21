@@ -19,13 +19,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.PurchaseEntity;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
-import amadda_back.amadda_back.View.domain.entity.WeatherResponseDTO;
 import amadda_back.amadda_back.View.service.ImageService;
 import amadda_back.amadda_back.View.service.OCRService;
 import amadda_back.amadda_back.View.service.PostService;
-import amadda_back.amadda_back.View.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -35,7 +34,6 @@ import lombok.RequiredArgsConstructor;
 public class Controller {
 
     private final PostService postService;
-    private final WeatherService weatherService;
     private final OCRService ocrService;
     private final ImageService imageService;
 
@@ -65,25 +63,20 @@ public class Controller {
 
     // 포스트 삭제 처리
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
-        boolean deleted = postService.deletePost(postId);
-        if (deleted) {
-            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
-        } else {
-            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
-        }
+    public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
+    boolean deleted = postService.deletePost(postId);
+    if (deleted) {
+        return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다."); // 200 상태 코드
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 404 상태 코드
     }
+    }
+
 
     @GetMapping("/posts/mood")
     public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {
         return ResponseEntity.ok(postService.getPostsByMood(moods));
     }
-
-    // @GetMapping("/posts/privacy")
-    // public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam
-    // PostResponseDTO.Privacy privacy) {
-    // return ResponseEntity.ok(postService.getPostsByPrivacy(privacy));
-    // }
 
     @GetMapping("/posts/pinColor")
     public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam(name = "color") String color) {
@@ -115,18 +108,6 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(
             @RequestParam(name = "receiptVerification") Boolean receiptVerification) {
         return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
-    }
-
-    @GetMapping("/weatherByLocation")
-    public ResponseEntity<WeatherResponseDTO> getWeatherByLocation(
-            @RequestParam(name = "lat") double lat,
-            @RequestParam(name = "lon") double lon) {
-        try {
-            return ResponseEntity.ok(weatherService.getWeatherByLocation(lat, lon));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
     }
 
     @GetMapping("/foodImage")
@@ -235,9 +216,15 @@ public class Controller {
         return ResponseEntity.ok(imageUrls);
     }
 
-    // 테마 불러오기
+    // 테마 목록 불러오기
     @GetMapping("/themeStore")
     public List<ThemeEntity> getAllThemes() {
         return postService.getAllThemes();
+    }
+
+    // 사용자가 구매한 테마 불러오기
+    @GetMapping("/myTheme")
+    public List<PurchaseEntity> getPurchasesByUserId(@RequestParam(name = "userId") Integer userId) {
+        return postService.getPurchasesByUserId(userId);
     }
 }

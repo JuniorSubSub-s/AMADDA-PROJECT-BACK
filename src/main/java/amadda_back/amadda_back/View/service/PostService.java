@@ -11,17 +11,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
+import amadda_back.amadda_back.View.dao.PurchaseDAO;
 import amadda_back.amadda_back.View.dao.TagDAO;
 import amadda_back.amadda_back.View.dao.ThemeDAO;
 import amadda_back.amadda_back.View.dao.TopicDAO;
 import amadda_back.amadda_back.View.domain.entity.FoodImageEntity;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.PurchaseEntity;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.TagEntity;
 import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
@@ -56,6 +60,9 @@ public class PostService {
 
     @Autowired
     private TopicDAO topicDAO;
+
+    @Autowired
+    private PurchaseDAO purchaseDAO;
 
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
@@ -248,13 +255,13 @@ public class PostService {
     }
 
     public boolean deletePost(Integer postId) {
-        // 게시물이 존재하는지 확인
         if (postDAO.existsById(postId)) {
-            postDAO.deleteById(postId); // 삭제
-            return true;
+            postDAO.deleteById(postId); // 게시물 삭제
+            return true; // 삭제 성공
         }
         return false; // 게시물이 존재하지 않으면 false 반환
     }
+    
 
     // 이미지 저장
     public void saveImage(List<String> imageUrls, Integer postId, Integer restaurantId) {
@@ -269,9 +276,14 @@ public class PostService {
 
     }
 
-    // 테마 불러오기
+    // 테마 리스트 불러오기
     public List<ThemeEntity> getAllThemes() {
         return themeDAO.findAll();
+    }
+
+    // 사용자가 구매한 테마 불러오기
+    public List<PurchaseEntity> getPurchasesByUserId(Integer userId) {
+        return purchaseDAO.findByUser_UserId(userId);
     }
 
 }
