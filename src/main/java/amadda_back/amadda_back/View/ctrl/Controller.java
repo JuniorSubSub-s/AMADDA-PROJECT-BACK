@@ -65,8 +65,9 @@ public class Controller {
 
     // 포스트 삭제 처리
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") Integer postId) {
         boolean deleted = postService.deletePost(postId);
+        System.out.println("delete boolean : " + deleted);
         if (deleted) {
             return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
         } else {
@@ -78,7 +79,7 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {
         return ResponseEntity.ok(postService.getPostsByMood(moods));
     }
-
+    
     // @GetMapping("/posts/privacy")
     // public ResponseEntity<List<PostResponseDTO>> getPostsByPrivacy(@RequestParam
     // PostResponseDTO.Privacy privacy) {

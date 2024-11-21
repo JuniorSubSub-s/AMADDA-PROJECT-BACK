@@ -1,8 +1,5 @@
 package amadda_back.amadda_back.weatherAPI.ctrl;
 
-import jxl.Sheet;
-import jxl.Workbook;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -11,9 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import amadda_back.amadda_back.weatherAPI.domain.entity.WeatherDTO;
 import amadda_back.amadda_back.weatherAPI.service.GetWeatherService;
@@ -23,9 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,89 +118,5 @@ public class WeatherController {
         br.close();
         
         return result.toString();
-    }
-
-    // 날씨 데이터를 지역 이름 기반으로 조회
-    @GetMapping("/weatherImageChange")
-    public Object getWeatherByLocation(
-            @RequestParam("nx") String nx,
-            @RequestParam("ny") String ny,
-            @RequestParam("base_date") String baseDate,
-            @RequestParam("base_time") String baseTime) {
-
-        return getWeatherData(baseDate, baseTime, nx, ny);
-    }
-
-    // API 호출 및 데이터 반환
-    private Object getWeatherData(String baseDate, String baseTime, String nx, String ny) {
-        try {
-            StringBuilder urlBuilder = new StringBuilder(weatherApiUrl);
-            urlBuilder.append("?").append(URLEncoder.encode("ServiceKey", "UTF-8")).append("=").append(serviceKey);
-            urlBuilder.append("&").append(URLEncoder.encode("nx", "UTF-8")).append("=")
-                    .append(URLEncoder.encode(nx, "UTF-8"));
-            urlBuilder.append("&").append(URLEncoder.encode("ny", "UTF-8")).append("=")
-                    .append(URLEncoder.encode(ny, "UTF-8"));
-            urlBuilder.append("&").append(URLEncoder.encode("base_date", "UTF-8")).append("=")
-                    .append(URLEncoder.encode(baseDate, "UTF-8"));
-            urlBuilder.append("&").append(URLEncoder.encode("base_time", "UTF-8")).append("=")
-                    .append(URLEncoder.encode(baseTime, "UTF-8"));
-            urlBuilder.append("&").append(URLEncoder.encode("dataType", "UTF-8")).append("=").append("JSON");
-    
-            String apiUrl = urlBuilder.toString();
-            System.out.println("API URL: " + apiUrl);
-    
-            RestTemplate restTemplate = new RestTemplate();
-            String jsonResponse = restTemplate.getForObject(new URI(apiUrl), String.class);
-    
-            // 응답이 올바른 JSON인지 확인
-            if (jsonResponse == null || !jsonResponse.trim().startsWith("{")) {
-                System.err.println("Invalid JSON response: " + jsonResponse);
-                return "Error: Invalid response from weather API.";
-            }
-    
-            System.out.println("API Response: " + jsonResponse);
-    
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readTree(jsonResponse); // JSON 데이터로 변환하여 반환
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error fetching weather data: " + e.getMessage();
-        }
-    }
-
-    // 엑셀 파일에서 지역 이름에 해당하는 격자값 조회
-    public Map<String, String> readExcel(String localName) {
-        Map<String, String> result = new HashMap<>();
-
-        try {
-            InputStream is = getClass().getClassLoader().getResourceAsStream("local_name.xls");
-            if (is == null) {
-                throw new IllegalArgumentException("엑셀 파일을 찾을 수 없습니다.");
-            }
-
-            Workbook wb = Workbook.getWorkbook(is);
-            if (wb != null) {
-                Sheet sheet = wb.getSheet(0);
-                if (sheet != null) {
-                    int rowTotal = sheet.getRows();
-
-                    for (int row = 1; row < rowTotal; row++) {
-                        String contents = sheet.getCell(0, row).getContents();
-                        if (contents.contains(localName)) {
-                            String x = sheet.getCell(1, row).getContents();
-                            String y = sheet.getCell(2, row).getContents();
-                            result.put("x", x);
-                            result.put("y", y);
-                            break;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("엑셀 파일 읽기 중 오류 발생: " + e.getMessage());
-        }
-
-        return result;
     }
 }
