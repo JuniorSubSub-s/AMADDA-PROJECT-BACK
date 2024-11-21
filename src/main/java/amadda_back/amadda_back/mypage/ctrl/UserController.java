@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import amadda_back.amadda_back.View.service.ImageService;
 import amadda_back.amadda_back.mypage.domain.entity.Badge;
 import amadda_back.amadda_back.mypage.domain.entity.UserInfoDTO;
 import amadda_back.amadda_back.mypage.exception.ResourceNotFoundException;
@@ -25,9 +26,11 @@ import amadda_back.amadda_back.mypage.service.UserService;
 public class UserController {
 
     private final UserService userService;
+    private final ImageService imageService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ImageService imageService) {
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/{userId}")
@@ -54,49 +57,29 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userId}/upload-image")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable("userId") int userId, @RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("파일이 비어 있습니다.");
-        }
+    @PutMapping("/upload-profile-image/{userId}")
+    public ResponseEntity<?> uploadProfileImage(@RequestParam("file") List<MultipartFile> files, // 다중 파일 업로드 지원
+    @RequestParam("userId") Integer userId) {
 
-        try {
-            String imageUrl = saveFile(file);
-            userService.updateProfileImage(userId, imageUrl);
-            return ResponseEntity.ok(imageUrl);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 실패: " + e.getMessage());
-        }
+    if (files.isEmpty() || files.stream().anyMatch(MultipartFile::isEmpty)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("파일이 비어 있습니다.");
     }
 
-    private String saveFile(MultipartFile file) throws IOException {
-        // 업로드 디렉토리 경로를 "C:/uploads/assets"로 변경
-        String uploadDir = "C:/finalproject/AMADDA-PROJECT-BACK/src/main/resources/static/img/profile";
-        File destinationDir = new File(uploadDir);
-        if (!destinationDir.exists()) {
-            destinationDir.mkdirs(); 
+    try {
+        // 이미지 파일 업로드
+        List<String> imageUrls = imageService.uploadFile(files);
+
+        // 첫 번째 이미지를 사용자 프로필 이미지로 저장 (필요 시 변경 가능)
+        if (!imageUrls.isEmpty()) {
+            userService.updateProfileImage(userId, imageUrls.get(0));
         }
-    
-        // 파일 이름 중복 방지 처리
-        String fileName = file.getOriginalFilename();
-        if (fileName == null) {
-            throw new IOException("파일 이름을 가져올 수 없습니다.");
-        }
-    
-        String filePath = uploadDir + "/" + fileName;
-        File destinationFile = new File(filePath);
-        
-        int count = 1;
-        while (destinationFile.exists()) {
-            String newFileName = fileName.substring(0, fileName.lastIndexOf('.')) + "_" + count++ + fileName.substring(fileName.lastIndexOf('.'));
-            destinationFile = new File(uploadDir, newFileName);
-        }
-    
-        file.transferTo(destinationFile);
-    
-        // 반환할 URL 형식으로 수정
-        return "/assets/" + destinationFile.getName();  // 반환 경로를 "/assets/"로 수정
+
+        return ResponseEntity.ok(imageUrls); // 업로드된 이미지 URLs 반환
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("파일 업로드 실패: " + e.getMessage());
     }
+}
 
     @GetMapping("/badge/{userId}")
     public ResponseEntity<List<Badge>> getBadgesByUserId(@PathVariable(name = "userId") Integer userId) {

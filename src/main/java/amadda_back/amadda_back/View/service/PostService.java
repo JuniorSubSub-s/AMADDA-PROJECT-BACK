@@ -16,14 +16,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
+import amadda_back.amadda_back.View.dao.PurchaseDAO;
 import amadda_back.amadda_back.View.dao.TagDAO;
 import amadda_back.amadda_back.View.dao.ThemeDAO;
 import amadda_back.amadda_back.View.dao.TopicDAO;
 import amadda_back.amadda_back.View.domain.entity.FoodImageEntity;
 import amadda_back.amadda_back.View.domain.entity.PostEntity;
 import amadda_back.amadda_back.View.domain.entity.PostResponseDTO;
+import amadda_back.amadda_back.View.domain.entity.PurchaseEntity;
 import amadda_back.amadda_back.View.domain.entity.RestaurantEntity;
 import amadda_back.amadda_back.View.domain.entity.TagEntity;
+import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
 import amadda_back.amadda_back.View.domain.entity.TopicEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
@@ -56,6 +59,9 @@ public class PostService {
     @Autowired
     private TopicDAO topicDAO;
 
+    @Autowired
+    private PurchaseDAO purchaseDAO;
+
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
         List<PostEntity> postEntities = finmapPostDAO.findByRestaurant_RestaurantId(restaurantId);
@@ -79,12 +85,6 @@ public class PostService {
         return convertToPostResponseDTO(postEntities);
     }
 
-    // public List<PostResponseDTO> getPostsByPrivacy(PostResponseDTO.Privacy privacy) {
-    //     // Privacy 타입을 PostEntity.Privacy로 변환
-    //     PostEntity.Privacy entityPrivacy = PostEntity.Privacy.valueOf(privacy.name());
-    //     List<PostEntity> postEntities = postDAO.findPostsByPrivacy(entityPrivacy);
-    //     return convertToPostResponseDTO(postEntities);
-    // }
     public List<PostResponseDTO> getPostsByColor(String color) {
         if ("Total".equals(color)) {
             List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
@@ -272,6 +272,16 @@ public class PostService {
             foodImageDAO.save(foodImage);
         }
 
+    }
+
+    // 테마 리스트 불러오기
+    public List<ThemeEntity> getAllThemes() {
+        return themeDAO.findAll();
+    }
+
+    // 사용자가 구매한 테마 불러오기
+    public List<PurchaseEntity> getPurchasesByUserId(Integer userId) {
+        return purchaseDAO.findByUser_UserId(userId);
     }
 
 }
