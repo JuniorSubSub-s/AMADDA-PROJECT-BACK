@@ -6,16 +6,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import amadda_back.amadda_back.finmapjpa.domain.entity.CommentEntity;
+import amadda_back.amadda_back.finmapjpa.domain.entity.ModalBadgeEntity;
 import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseMapDTO;
 import amadda_back.amadda_back.finmapjpa.domain.entity.ReplyCommentEntity;
 import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantMapEntity;
+import amadda_back.amadda_back.finmapjpa.domain.entity.UserModalBadgeEntity;
+import amadda_back.amadda_back.finmapjpa.service.BadgeService;
+import amadda_back.amadda_back.finmapjpa.service.FoodModalImageService;
 import amadda_back.amadda_back.finmapjpa.service.PostCommentService;
 import amadda_back.amadda_back.finmapjpa.service.PostMapService;
 import amadda_back.amadda_back.finmapjpa.service.ReplyCommentService;
 import amadda_back.amadda_back.finmapjpa.service.RestaurantMapService;
 
+import java.util.Collections;
 import java.util.List;
-
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -26,6 +31,21 @@ public class PostController {
     private final PostMapService postMapService;
     private final PostCommentService postCommentService;
     private final ReplyCommentService replyCommentService;
+    private final FoodModalImageService foodModalImageService;
+    private final BadgeService badgeService;
+
+    // 사용자 ID에 해당하는 배지 이미지 조회
+    @GetMapping("/{userId}/badges")
+    public List<String> getUserBadgeImages(@PathVariable("userId") Long userId) {
+        return badgeService.getUserBadgeImages(userId);
+    }
+
+    // 모든 배지 이미지 조회
+    @GetMapping("/badges")
+    public List<String> getAllBadges() {
+        return badgeService.getAllBadges();
+    }
+
 
     // 모든 레스토랑을 가져오는 API
     @GetMapping("/restaurants")
@@ -138,4 +158,10 @@ public class PostController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+    @GetMapping("/posts/{postId}/food-images")
+    public List<String> getFoodImages(@PathVariable Long postId) {
+        return foodModalImageService.getFoodImageUrls(postId);
+    }
+
 }
