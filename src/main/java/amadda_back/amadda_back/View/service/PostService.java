@@ -28,6 +28,7 @@ import amadda_back.amadda_back.View.domain.entity.ThemeEntity;
 import amadda_back.amadda_back.View.domain.entity.TopicEntity;
 import amadda_back.amadda_back.finmapjpa.dao.FinmapPostDAO;
 import amadda_back.amadda_back.finmapjpa.dao.RestaurantDAO;
+import amadda_back.amadda_back.mypage.dao.BadgeDao;
 import amadda_back.amadda_back.mypage.dao.UserRepository;
 
 @Service
@@ -60,6 +61,9 @@ public class PostService {
     @Autowired
     private PurchaseDAO purchaseDAO;
 
+    @Autowired
+    private BadgeDao badgeDao;
+
     // 레스토랑 ID에 해당하는 포스트를 가져오는 메서드
     public List<PostResponseDTO> getPostsByRestaurantId(Integer restaurantId) {
         List<PostEntity> postEntities = finmapPostDAO.findByRestaurant_RestaurantId(restaurantId);
@@ -85,7 +89,7 @@ public class PostService {
 
     public List<PostResponseDTO> getPostsByColor(String color) {
         if ("Total".equals(color)) {
-            List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
+            List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateDesc();
             return convertToPostResponseDTO(postEntities);
         }
 
@@ -136,7 +140,7 @@ public class PostService {
     }
 
     public List<PostResponseDTO> getLatestPosts() {
-        List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateAsc();
+        List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateDesc();
         return convertToPostResponseDTO(postEntities);
     }
 
@@ -258,7 +262,6 @@ public class PostService {
         }
         return false; // 게시물이 존재하지 않으면 false 반환
     }
-    
 
     // 이미지 저장
     public void saveImage(List<String> imageUrls, Integer postId, Integer restaurantId) {
@@ -281,6 +284,17 @@ public class PostService {
     // 사용자가 구매한 테마 불러오기
     public List<PurchaseEntity> getPurchasesByUserId(Integer userId) {
         return purchaseDAO.findByUser_UserId(userId);
+    }
+
+    // 특정 Badge ID로 User ID 리스트 가져오기
+    public List<Integer> getUserIdsByBadgeId() {
+        return badgeDao.findUserIdsByBadgeId(27);
+    }
+
+    // 여러 사용자 포스트 조회
+    public List<PostResponseDTO> getPostsByUserIds(List<Integer> userIds) {
+        List<PostEntity> postEntities = postDAO.findByUserIds(userIds);
+        return convertToPostResponseDTO(postEntities);
     }
 
 }
