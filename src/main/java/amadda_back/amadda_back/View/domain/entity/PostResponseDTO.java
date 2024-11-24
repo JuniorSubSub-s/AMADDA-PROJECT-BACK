@@ -17,6 +17,7 @@ public class PostResponseDTO {
     private String weather;
     private Boolean receiptVerification;
     private Integer dailyViews;
+    private String themeDiaryImg;
     private RestaurantEntity restaurant;
     private UserEntity user;
     private ThemeEntity theme;
@@ -33,6 +34,7 @@ public class PostResponseDTO {
         this.weather = entity.getWeather();
         this.receiptVerification = entity.getReceiptVerification();
         this.dailyViews = entity.getDailyViews();
+        this.themeDiaryImg = entity.getThemeDiaryImg();
         this.restaurant = entity.getRestaurant();
         this.user = entity.getUser();
         this.theme = entity.getTheme();
