@@ -181,11 +181,12 @@ public class Controller {
             Integer restaurantId = (Integer) postData.get("restaurant_id");
             Integer userId = (Integer) postData.get("user_id");
             Integer themeId = (Integer) postData.get("theme_id");
+            String themeDiaryImg = (String) postData.get("theme_diary_img");
             List<String> topics = (List<String>) postData.get("clip");
             List<String> tags = (List<String>) postData.get("tag");
 
             // 포스트 저장
-            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather, receiptVerification, restaurantId, userId, themeId);
+            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather, receiptVerification, restaurantId, userId, themeId, themeDiaryImg);
 
             // 주제 저장
             if (topics != null && !topics.isEmpty()) {
@@ -206,13 +207,20 @@ public class Controller {
     }
 
     @PostMapping("/saveFoodImages")
-    public ResponseEntity<?> uploadFile(@RequestParam(name = "file") List<MultipartFile> images,
+    public ResponseEntity<?> saveFoodImages(@RequestParam(name = "file") List<MultipartFile> images,
             @RequestParam("postId") Integer postId,
             @RequestParam("restaurantId") Integer restaurantId) {
         // 이미지 파일 업로드
         List<String> imageUrls = imageService.uploadFile(images);
         postService.saveImage(imageUrls, postId, restaurantId);
 
+        return ResponseEntity.ok(imageUrls);
+    }
+
+    @PostMapping("/saveThemeDiaryImages")
+    public ResponseEntity<?> saveThemeDiaryImages(@RequestParam(name = "file") List<MultipartFile> images) {
+        // 이미지 파일 업로드
+        List<String> imageUrls = imageService.uploadFile(images);
         return ResponseEntity.ok(imageUrls);
     }
 

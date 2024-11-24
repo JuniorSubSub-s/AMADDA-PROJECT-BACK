@@ -1,8 +1,5 @@
 package amadda_back.amadda_back.View.service;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
 import amadda_back.amadda_back.View.dao.PostDAO;
@@ -199,7 +195,7 @@ public class PostService {
 
     // 게시물 저장
     public PostEntity savePost(String title, String content, String privacy, String foodCategory, String mood,
-            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId) {
+            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId, String themeDiaryImg) {
         PostEntity post = new PostEntity();
         post.setPostTitle(title);
         post.setPostContent(content);
@@ -208,6 +204,7 @@ public class PostService {
         post.setMood(mood);
         post.setWeather(weather);
         post.setReceiptVerification(receiptVerification);
+        post.setThemeDiaryImg(themeDiaryImg);
         // 각 엔티티를 ID로 찾아서 매핑
         post.setRestaurant(restaurantDAO.findById(restaurantId).orElse(null));
         post.setUser(userRepository.findById(userId).orElse(null));
