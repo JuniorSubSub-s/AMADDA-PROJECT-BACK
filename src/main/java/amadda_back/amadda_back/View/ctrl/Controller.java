@@ -63,14 +63,15 @@ public class Controller {
 
     // 포스트 삭제 처리
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable Integer postId) {
-        boolean deleted = postService.deletePost(postId);
-        if (deleted) {
-            return ResponseEntity.noContent().build(); // 성공적으로 삭제된 경우
-        } else {
-            return ResponseEntity.notFound().build(); // 포스트를 찾을 수 없는 경우
-        }
+    public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
+    boolean deleted = postService.deletePost(postId);
+    if (deleted) {
+        return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다."); // 200 상태 코드
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 404 상태 코드
     }
+    }
+
 
     @GetMapping("/posts/mood")
     public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {

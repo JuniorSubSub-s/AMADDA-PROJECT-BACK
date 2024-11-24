@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
@@ -250,13 +252,13 @@ public class PostService {
     }
 
     public boolean deletePost(Integer postId) {
-        // 게시물이 존재하는지 확인
         if (postDAO.existsById(postId)) {
-            postDAO.deleteById(postId); // 삭제
-            return true;
+            postDAO.deleteById(postId); // 게시물 삭제
+            return true; // 삭제 성공
         }
         return false; // 게시물이 존재하지 않으면 false 반환
     }
+    
 
     // 이미지 저장
     public void saveImage(List<String> imageUrls, Integer postId, Integer restaurantId) {
