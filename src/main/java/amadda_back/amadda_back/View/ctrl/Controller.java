@@ -64,14 +64,13 @@ public class Controller {
     // 포스트 삭제 처리
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
-    boolean deleted = postService.deletePost(postId);
-    if (deleted) {
-        return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다."); // 200 상태 코드
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 404 상태 코드
+        boolean deleted = postService.deletePost(postId);
+        if (deleted) {
+            return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다."); // 200 상태 코드
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 404 상태 코드
+        }
     }
-    }
-
 
     @GetMapping("/posts/mood")
     public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {
@@ -108,6 +107,12 @@ public class Controller {
     public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(
             @RequestParam(name = "receiptVerification") Boolean receiptVerification) {
         return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
+    }
+
+    @GetMapping("/posts/amaddabadge")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByAmaddaBadge() {
+        List<Integer> userIds = postService.getUserIdsByBadgeId();
+        return ResponseEntity.ok(postService.getPostsByUserIds(userIds));
     }
 
     @GetMapping("/foodImage")
@@ -235,4 +240,5 @@ public class Controller {
     public List<PurchaseEntity> getPurchasesByUserId(@RequestParam(name = "userId") Integer userId) {
         return postService.getPurchasesByUserId(userId);
     }
+
 }
