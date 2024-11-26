@@ -64,14 +64,14 @@ public class OCRService {
         System.out.println("Final OCR Text: " + ocrText.toString()); // 콘솔에 최종 결과 출력
 
         // 가게 이름과 주소가 OCR 결과에 포함되어 있는지 확인
-        boolean isStoreNameFound = countOccurrences(ocrText.toString(), storeName) >= 2;  // 2회 이상 포함되어야 true
-        boolean isStoreAddressFound = countOccurrences(ocrText.toString(), storeAddress) >= 2;  // 2회 이상 포함되어야 true
+        //boolean isStoreNameFound = countOccurrences(ocrText.toString(), storeName) >= 2;  // 2회 이상 포함되어야 true
+        boolean isStoreAddressFound = countOccurrences(ocrText.toString(), storeAddress);  // 2회 이상 포함되어야 true
 
-        logger.info("Is Store Name Found: {}", isStoreNameFound);
+        //logger.info("Is Store Name Found: {}", isStoreNameFound);
         logger.info("Is Store Address Found: {}", isStoreAddressFound);
 
         // 두 조건이 모두 만족하면 true 반환
-        return isStoreNameFound || isStoreAddressFound;
+        return isStoreAddressFound;
     }
 
     public String sendOcrRequest(MultipartFile file) throws IOException {
@@ -103,7 +103,7 @@ public class OCRService {
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
             String responseBody = response.getBody();
-            logger.info("OCR API Response: {}", responseBody);
+            logger.debug("OCR API Response: {}", responseBody);
             System.out.println("==================================");
             return responseBody;
         } catch (Exception e) {
@@ -112,20 +112,41 @@ public class OCRService {
         }
     }
 
-    private int countOccurrences(String text, String keyword) {
-        int count = 0;
-        String[] keywords = keyword.split(" "); // 공백을 기준으로 키워드를 나눔
+    private Boolean countOccurrences(String text, String keyword) {
+        // OCR 텍스트와 키워드에서 공백 및 특수문자 제거
+        String normalizedText = text.replaceAll("[^a-zA-Z가-힣0-9]", "").toLowerCase();
+        String normalizedKeyword = keyword.replaceAll("[^a-zA-Z가-힣0-9]", "").toLowerCase();
 
-        for (String word : keywords) {
-            int index = 0;
-            // 각 단어가 text에서 몇 번 등장하는지 확인
-            while ((index = text.indexOf(word, index)) != -1) {
-                count++;
-                logger.debug("Keyword '{}' found at index: {}", word, index); // 키워드 발견 위치 로깅
-                index++;
+        // 서울특별시를 서울로 변경 (키워드에서만)
+        normalizedKeyword = normalizedKeyword.replace("서울특별시", "서울");
+
+        logger.info("Normalized Text: {}", normalizedText);
+        logger.info("Normalized Keyword: {}", normalizedKeyword);
+
+        // 키워드 배열로 나눔
+        String[] keywords = normalizedKeyword.split("(?<=\\G.{1,2})"); // 각 한글/영어 단위로 나눔
+        int keywordIndex = 0;
+
+        for (int i = 0; i < normalizedText.length(); i++) {
+            if (keywordIndex == keywords.length) {
+                logger.info("All keywords matched in sequence.");
+                return true; // 모든 키워드 매칭 완료
+            }
+
+            if (i + keywords[keywordIndex].length() <= normalizedText.length()
+                    && normalizedText.substring(i, i + keywords[keywordIndex].length())
+                            .equals(keywords[keywordIndex])) {
+                logger.debug("Matched keyword '{}' at index: {}", keywords[keywordIndex], i);
+                i += keywords[keywordIndex].length() - 1;
+                keywordIndex++;
+            } else if (keywordIndex > 0) {
+                logger.debug("Keyword match sequence interrupted. Resetting index.");
+                keywordIndex = 0;
             }
         }
-        return count;
+
+        logger.info("Keywords match sequence failed.");
+        return false; // 키워드 매칭 실패
     }
 
 }

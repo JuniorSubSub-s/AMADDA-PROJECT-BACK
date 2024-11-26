@@ -20,22 +20,6 @@ public interface PostDAO extends JpaRepository<PostEntity, Integer> {
     @Query("SELECT p FROM PostEntity p WHERE p.weather = :weather")
     List<PostEntity> findPostsByWeather(@Param("weather") String weather);
 
-    // 감정에 해당하는 포스트 조회
-    @Query("SELECT p FROM PostEntity p WHERE p.mood = :mood")
-    List<PostEntity> findPostsByMood(@Param("mood") String mood);
-
-    // 프라이버시 설정에 해당하는 포스트 조회
-    @Query("SELECT p FROM PostEntity p WHERE p.privacy = :privacy")
-    List<PostEntity> findPostsByPrivacy(@Param("privacy") String privacy);
-
-    // 특정 레스토랑에서 포스트 색깔 기준으로 조회
-    @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.totalPost >= :minPosts")
-    List<PostEntity> findPostsByColor(@Param("minPosts") int minPosts);
-
-    // 레스토랑이 50개 미만인 포스트 조회
-    @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.totalPost < 50")
-    List<PostEntity> findPostsByLessThan50();
-
     // 레스토랑 이름으로 포스트 검색
     @Query("SELECT p FROM PostEntity p JOIN p.restaurant r WHERE r.restaurantName LIKE %:searchText%")
     List<PostEntity> findByRestaurantName(@Param("searchText") String searchText);
@@ -52,18 +36,12 @@ public interface PostDAO extends JpaRepository<PostEntity, Integer> {
     @Query("SELECT DISTINCT p FROM TopicEntity t JOIN t.post p WHERE t.topicName IN :topicNames")
     List<PostEntity> findPostsByTopicNames(@Param("topicNames") List<String> topicNames);
 
-    // 여러 감정에 해당하는 포스트 조회
-    List<PostEntity> findByMoodIn(List<String> moods);
-
     // 여러 포스트 ID로 포스트 조회
     @Query("SELECT p FROM PostEntity p WHERE p.postId IN :postIds")
     List<PostEntity> getPostsByIds(@Param("postIds") List<Integer> postIds);
 
     // 최신 포스트 조회 (날짜 기준)
     List<PostEntity> findAllByOrderByPostDateDesc();
-
-    // 영수증 인증 여부에 따른 포스트 조회
-    List<PostEntity> findByReceiptVerification(Boolean receiptVerification);
 
     // 조회수가 높은 순으로 포스트 조회
     @Query("SELECT p FROM PostEntity p ORDER BY p.dailyViews DESC")
