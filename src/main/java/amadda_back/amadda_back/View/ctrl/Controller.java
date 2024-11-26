@@ -72,21 +72,6 @@ public class Controller {
         }
     }
 
-    @GetMapping("/posts/mood")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {
-        return ResponseEntity.ok(postService.getPostsByMood(moods));
-    }
-
-    @GetMapping("/posts/pinColor")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam(name = "color") String color) {
-        return ResponseEntity.ok(postService.getPostsByColor(color));
-    }
-
-    @GetMapping("/posts/searchText")
-    public ResponseEntity<List<PostResponseDTO>> searchPosts(@RequestParam(name = "searchText") String searchText) {
-        return ResponseEntity.ok(postService.getPostsBySearchText(searchText));
-    }
-
     @GetMapping("/posts/tags")
     public ResponseEntity<List<PostEntity>> getPostsByTags(@RequestParam(name = "tagNames") List<String> tagNames) {
         return ResponseEntity.ok(postService.getPostsByTags(tagNames));
@@ -101,12 +86,6 @@ public class Controller {
     @GetMapping("/posts/latest")
     public ResponseEntity<List<PostResponseDTO>> getLatestPosts() {
         return ResponseEntity.ok(postService.getLatestPosts());
-    }
-
-    @GetMapping("/posts/verification")
-    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(
-            @RequestParam(name = "receiptVerification") Boolean receiptVerification) {
-        return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
     }
 
     @GetMapping("/posts/amaddabadge")
