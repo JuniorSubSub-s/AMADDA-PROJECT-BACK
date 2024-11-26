@@ -49,6 +49,7 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<UserInfoDTO> updateUserInfo(@PathVariable("userId") int userId,
             @RequestBody UserInfoDTO userInfoDTO) {
+        System.out.println("Received DTO: " + userInfoDTO);
         try {
             UserInfoDTO updatedUserInfo = userService.updateUserInfo(userId, userInfoDTO);
             return ResponseEntity.ok(updatedUserInfo);

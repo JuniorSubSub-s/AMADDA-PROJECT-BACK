@@ -27,7 +27,17 @@ public class PostMapService {
     private final FoodTagDAO foodTagDao;
     private final UserModalBadgeDAO userModalBadgeDao;
 
+    // 사용자가 작성한 게시글 리스트 반환
+    public List<PostResponseMapDTO> getPostsByUserId(Integer userId) {
+        List<PostResponseMapDTO> posts = postDao.findByUser_UserId(userId);
+        if (posts == null || posts.isEmpty()) {
+            throw new IllegalArgumentException("해당 사용자의 게시글이 없습니다.");
+        }
+        return posts;
+    }
+
     public List<PostResponseMapDTO> getPostsByRestaurantId(Integer restaurantId) {
+
         // 1. 레스토랑 ID에 해당하는 포스트 리스트 가져오기
         List<PostResponseMapDTO> posts = postDao.findByRestaurant_RestaurantId(restaurantId);
 

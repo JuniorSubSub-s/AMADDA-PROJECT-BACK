@@ -6,11 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import amadda_back.amadda_back.finmapjpa.domain.entity.CommentEntity;
-import amadda_back.amadda_back.finmapjpa.domain.entity.ModalBadgeEntity;
 import amadda_back.amadda_back.finmapjpa.domain.entity.PostResponseMapDTO;
 import amadda_back.amadda_back.finmapjpa.domain.entity.ReplyCommentEntity;
 import amadda_back.amadda_back.finmapjpa.domain.entity.RestaurantMapEntity;
-import amadda_back.amadda_back.finmapjpa.domain.entity.UserModalBadgeEntity;
 import amadda_back.amadda_back.finmapjpa.service.BadgeService;
 import amadda_back.amadda_back.finmapjpa.service.FoodModalImageService;
 import amadda_back.amadda_back.finmapjpa.service.PostCommentService;
@@ -18,9 +16,7 @@ import amadda_back.amadda_back.finmapjpa.service.PostMapService;
 import amadda_back.amadda_back.finmapjpa.service.ReplyCommentService;
 import amadda_back.amadda_back.finmapjpa.service.RestaurantMapService;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -46,7 +42,6 @@ public class PostController {
         return badgeService.getAllBadges();
     }
 
-
     // 모든 레스토랑을 가져오는 API
     @GetMapping("/restaurants")
     public ResponseEntity<List<RestaurantMapEntity>> getAllRestaurants() {
@@ -62,6 +57,22 @@ public class PostController {
                 .map(restaurant -> restaurantMapService.getPinColorByPostCount(restaurant.getTotalPost()))
                 .toList();
         return new ResponseEntity<>(pinColors, HttpStatus.OK);
+    }
+
+    // 특정 사용자의 게시글 가져오기
+    @GetMapping("/restaurants/mapPost/{userId}/posts")
+    public ResponseEntity<?> getPostsByUserId(@PathVariable("userId") Integer userId) {
+        try {
+            List<PostResponseMapDTO> posts = postMapService.getPostsByUserId(userId);
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            // 사용자 데이터 없음
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // 기타 예외 처리
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 내부 오류가 발생했습니다.");
+        }
     }
 
     // 특정 레스토랑의 포스트 정보를 가져오는 API
