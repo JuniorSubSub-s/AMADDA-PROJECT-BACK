@@ -32,6 +32,10 @@ dependencies {
    implementation 'org.springframework.boot:spring-boot-starter-web'
    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
+   // 승호 추가
+   //  HTTP 클라이언트를 사용하기 위한 의존성 추가
+   implementation 'org.springframework.boot:spring-boot-starter-json'
+
    // 원준 추가
    // ModelMapper 의존성 추가
    implementation 'org.modelmapper:modelmapper:2.4.4'
@@ -77,8 +81,6 @@ dependencies {
    implementation 'javax.xml.bind:jaxb-api:2.3.1'
    implementation 'org.glassfish.jaxb:jaxb-core:2.3.0'
    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
-
-
 }
 
 tasks.named('test') {

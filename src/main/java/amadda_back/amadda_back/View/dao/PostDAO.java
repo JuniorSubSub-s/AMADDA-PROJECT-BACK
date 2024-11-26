@@ -60,7 +60,7 @@ public interface PostDAO extends JpaRepository<PostEntity, Integer> {
     List<PostEntity> getPostsByIds(@Param("postIds") List<Integer> postIds);
 
     // 최신 포스트 조회 (날짜 기준)
-    List<PostEntity> findAllByOrderByPostDateAsc();
+    List<PostEntity> findAllByOrderByPostDateDesc();
 
     // 영수증 인증 여부에 따른 포스트 조회
     List<PostEntity> findByReceiptVerification(Boolean receiptVerification);
@@ -68,4 +68,8 @@ public interface PostDAO extends JpaRepository<PostEntity, Integer> {
     // 조회수가 높은 순으로 포스트 조회
     @Query("SELECT p FROM PostEntity p ORDER BY p.dailyViews DESC")
     List<PostEntity> findAllOrderByDailyViewsDesc();
+
+    // 여러 사용자의 포스트 조회
+    @Query("SELECT p FROM PostEntity p WHERE p.user.userId IN :userIds")
+    List<PostEntity> findByUserIds(@Param("userIds") List<Integer> userIds);
 }

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import amadda_back.amadda_back.loginpage.dto.SignupDto.UsersFormDto;
-import amadda_back.amadda_back.loginpage.service.SignupService.TokensService;
 import amadda_back.amadda_back.loginpage.service.SignupService.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
-    private final TokensService tokensService;
 
     // private final UsersFormDto usersFormDto ;
     // private final PasswordEncoder passwordEncoder;

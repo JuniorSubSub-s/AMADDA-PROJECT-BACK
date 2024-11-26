@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# OpenAI API Key가 포함된 설정 파일을 Git에서 제외
+/src/main/resources/application.properties
+/src/main/resources/application.yml
