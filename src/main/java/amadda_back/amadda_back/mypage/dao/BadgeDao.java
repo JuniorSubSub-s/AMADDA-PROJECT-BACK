@@ -10,11 +10,8 @@ import amadda_back.amadda_back.mypage.domain.entity.Badge;
 import amadda_back.amadda_back.mypage.domain.entity.UserBadge;
 
 public interface BadgeDao extends JpaRepository<UserBadge, Integer> {
-
+    
     @Query("SELECT ub.badge FROM UserBadge ub JOIN ub.user u WHERE u.userId = :userId")
     List<Badge> findBadgesByUserId(@Param("userId") Integer userId);
-
-    @Query("SELECT ub.user.id FROM UserBadge ub WHERE ub.badge.id = :badgeId")
-    List<Integer> findUserIdsByBadgeId(@Param("badgeId") Integer badgeId);
 
 }
