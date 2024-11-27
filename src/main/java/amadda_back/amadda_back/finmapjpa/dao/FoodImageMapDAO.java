@@ -1,14 +1,9 @@
 package amadda_back.amadda_back.finmapjpa.dao;
 
-
-
 import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import amadda_back.amadda_back.finmapjpa.domain.entity.FoodMapImageEntity;
-
-
 
 public interface FoodImageMapDAO extends JpaRepository<FoodMapImageEntity, Long> {
 

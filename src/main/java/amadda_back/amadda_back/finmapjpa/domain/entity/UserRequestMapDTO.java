@@ -41,9 +41,6 @@ public class UserRequestMapDTO {
     @Column(name = "user_phonenumber")
     private String userPhoneNumber;
 
-    @Column(name = "profile_image")
-    private String profileImage;
-
     @Column(name = "user_createat")
     private LocalDateTime userCreateAt = LocalDateTime.now();
 
@@ -53,5 +50,6 @@ public class UserRequestMapDTO {
     @Column(name = "user_currency_balance")
     private Integer userCurrencyBalance = 0;
 
-
+    @Column(name = "profile_image")
+    private String profileImage;
 }
