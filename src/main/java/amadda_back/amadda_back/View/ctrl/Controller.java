@@ -63,13 +63,28 @@ public class Controller {
 
     // 포스트 삭제 처리
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
+    public ResponseEntity<String> deletePost(@PathVariable(name = "postId") Integer postId) {
         boolean deleted = postService.deletePost(postId);
         if (deleted) {
             return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다."); // 200 상태 코드
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("게시물이 존재하지 않습니다."); // 404 상태 코드
         }
+    }
+
+    @GetMapping("/posts/mood")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByMood(@RequestParam(name = "moods") List<String> moods) {
+        return ResponseEntity.ok(postService.getPostsByMood(moods));
+    }
+
+    @GetMapping("/posts/pinColor")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByColor(@RequestParam(name = "color") String color) {
+        return ResponseEntity.ok(postService.getPostsByColor(color));
+    }
+
+    @GetMapping("/posts/searchText")
+    public ResponseEntity<List<PostResponseDTO>> searchPosts(@RequestParam(name = "searchText") String searchText) {
+        return ResponseEntity.ok(postService.getPostsBySearchText(searchText));
     }
 
     @GetMapping("/posts/tags")
@@ -86,6 +101,12 @@ public class Controller {
     @GetMapping("/posts/latest")
     public ResponseEntity<List<PostResponseDTO>> getLatestPosts() {
         return ResponseEntity.ok(postService.getLatestPosts());
+    }
+
+    @GetMapping("/posts/verification")
+    public ResponseEntity<List<PostResponseDTO>> getPostsByReceiptVerification(
+            @RequestParam(name = "receiptVerification") Boolean receiptVerification) {
+        return ResponseEntity.ok(postService.findPostsByReceiptVerification(receiptVerification));
     }
 
     @GetMapping("/posts/amaddabadge")
@@ -171,7 +192,8 @@ public class Controller {
             List<String> tags = (List<String>) postData.get("tag");
 
             // 포스트 저장
-            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather, receiptVerification, restaurantId, userId, themeId, themeDiaryImg);
+            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather,
+                    receiptVerification, restaurantId, userId, themeId, themeDiaryImg);
 
             // 주제 저장
             if (topics != null && !topics.isEmpty()) {

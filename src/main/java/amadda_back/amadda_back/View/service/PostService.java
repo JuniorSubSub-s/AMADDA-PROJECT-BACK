@@ -75,9 +75,58 @@ public class PostService {
         return convertToPostResponseDTO(postEntities);
     }
 
+    public List<PostResponseDTO> getPostsByMood(List<String> moods) {
+        List<PostEntity> postEntities = postDAO.findByMoodIn(moods);
+        return convertToPostResponseDTO(postEntities);
+    }
+
     public List<PostResponseDTO> getPostsByIds(List<Integer> postIds) {
         List<PostEntity> postEntities = postDAO.findAllById(postIds);
         return convertToPostResponseDTO(postEntities);
+    }
+
+    public List<PostResponseDTO> getPostsByColor(String color) {
+        if ("Total".equals(color)) {
+            List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateDesc();
+            return convertToPostResponseDTO(postEntities);
+        }
+
+        if ("Black".equals(color)) {
+            List<PostEntity> postEntities = postDAO.findPostsByLessThan50();
+            return convertToPostResponseDTO(postEntities);
+        }
+
+        int minPosts = getMinPostsByColor(color);
+        List<PostEntity> postEntities = postDAO.findPostsByColor(minPosts);
+        return convertToPostResponseDTO(postEntities);
+    }
+
+    private int getMinPostsByColor(String color) {
+        switch (color) {
+            case "Purple":
+                return 400;
+            case "Yellow":
+                return 300;
+            case "Blue":
+                return 200;
+            case "Orange":
+                return 100;
+            case "Red":
+                return 50;
+            default:
+                return 0;
+        }
+    }
+
+    public List<PostResponseDTO> getPostsBySearchText(String searchText) {
+        List<PostEntity> postsByRestaurant = postDAO.findByRestaurantName(searchText);
+        List<PostEntity> postsByTag = postDAO.findByTagTagName(searchText);
+
+        List<PostEntity> combinedPosts = new ArrayList<>();
+        combinedPosts.addAll(postsByRestaurant);
+        combinedPosts.addAll(postsByTag);
+
+        return convertToPostResponseDTO(combinedPosts);
     }
 
     public List<PostEntity> getPostsByTags(List<String> tagNames) {
@@ -90,6 +139,11 @@ public class PostService {
 
     public List<PostResponseDTO> getLatestPosts() {
         List<PostEntity> postEntities = postDAO.findAllByOrderByPostDateDesc();
+        return convertToPostResponseDTO(postEntities);
+    }
+
+    public List<PostResponseDTO> findPostsByReceiptVerification(Boolean receiptVerification) {
+        List<PostEntity> postEntities = postDAO.findByReceiptVerification(receiptVerification);
         return convertToPostResponseDTO(postEntities);
     }
 
@@ -129,23 +183,27 @@ public class PostService {
     }
 
     // 레스토랑 중복 검사 후 추가 또는 기존 레스토랑 반환
-    public RestaurantEntity addRestaurantIfNotExists(String restaurantName, String restaurantAddress, Double locationLatitude, Double locationLongitude) {
+    public RestaurantEntity addRestaurantIfNotExists(String restaurantName, String restaurantAddress,
+            Double locationLatitude, Double locationLongitude) {
         // 중복 레스토랑 확인
-        Optional<RestaurantEntity> existingRestaurant = restaurantDAO.findByRestaurantNameAndRestaurantAddress(restaurantName, restaurantAddress);
+        Optional<RestaurantEntity> existingRestaurant = restaurantDAO
+                .findByRestaurantNameAndRestaurantAddress(restaurantName, restaurantAddress);
 
         if (existingRestaurant.isPresent()) {
             // 중복이 있을 경우 기존 레스토랑 반환
             return existingRestaurant.get();
         } else {
             // 중복이 없을 경우 새로운 레스토랑 저장 후 반환
-            RestaurantEntity newRestaurant = new RestaurantEntity(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+            RestaurantEntity newRestaurant = new RestaurantEntity(restaurantName, restaurantAddress, locationLatitude,
+                    locationLongitude);
             return restaurantDAO.save(newRestaurant);
         }
     }
 
     // 게시물 저장
     public PostEntity savePost(String title, String content, String privacy, String foodCategory, String mood,
-            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId, String themeDiaryImg) {
+            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId,
+            String themeDiaryImg) {
         PostEntity post = new PostEntity();
         post.setPostTitle(title);
         post.setPostContent(content);

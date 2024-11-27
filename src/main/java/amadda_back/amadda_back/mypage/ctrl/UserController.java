@@ -1,10 +1,7 @@
 package amadda_back.amadda_back.mypage.ctrl;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,9 +44,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserInfoDTO> updateUserInfo(@PathVariable("userId") int userId,
-            @RequestBody UserInfoDTO userInfoDTO) {
-        System.out.println("Received DTO: " + userInfoDTO);
+    public ResponseEntity<UserInfoDTO> updateUserInfo(@PathVariable("userId") int userId, @RequestBody UserInfoDTO userInfoDTO) {
         try {
             UserInfoDTO updatedUserInfo = userService.updateUserInfo(userId, userInfoDTO);
             return ResponseEntity.ok(updatedUserInfo);
@@ -62,32 +57,32 @@ public class UserController {
 
     @PutMapping("/upload-profile-image/{userId}")
     public ResponseEntity<?> uploadProfileImage(@RequestParam("file") List<MultipartFile> files, // 다중 파일 업로드 지원
-            @RequestParam("userId") Integer userId) {
+    @RequestParam("userId") Integer userId) {
 
-        if (files.isEmpty() || files.stream().anyMatch(MultipartFile::isEmpty)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("파일이 비어 있습니다.");
-        }
-
-        try {
-            // 이미지 파일 업로드
-            List<String> imageUrls = imageService.uploadFile(files);
-
-            // 첫 번째 이미지를 사용자 프로필 이미지로 저장 (필요 시 변경 가능)
-            if (!imageUrls.isEmpty()) {
-                userService.updateProfileImage(userId, imageUrls.get(0));
-            }
-
-            return ResponseEntity.ok(imageUrls); // 업로드된 이미지 URLs 반환
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("파일 업로드 실패: " + e.getMessage());
-        }
+    if (files.isEmpty() || files.stream().anyMatch(MultipartFile::isEmpty)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("파일이 비어 있습니다.");
     }
+
+    try {
+        // 이미지 파일 업로드
+        List<String> imageUrls = imageService.uploadFile(files);
+
+        // 첫 번째 이미지를 사용자 프로필 이미지로 저장 (필요 시 변경 가능)
+        if (!imageUrls.isEmpty()) {
+            userService.updateProfileImage(userId, imageUrls.get(0));
+        }
+
+        return ResponseEntity.ok(imageUrls); // 업로드된 이미지 URLs 반환
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("파일 업로드 실패: " + e.getMessage());
+    }
+}
 
     @GetMapping("/badge/{userId}")
     public ResponseEntity<List<Badge>> getBadgesByUserId(@PathVariable(name = "userId") Integer userId) {
         List<Badge> badges = userService.getBadgesByUserId(userId);
         return ResponseEntity.ok(badges);
     }
-
+    
 }

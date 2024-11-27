@@ -13,17 +13,18 @@ import amadda_back.amadda_back.loginpage.service.SignupService.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-
 // @CrossOrigin(origins = "*")
 @RestController("signupUserController")
 @RequestMapping("/ama")
 
 @RequiredArgsConstructor
 public class UserController {
-    
+
+    private final UserService userService;
     private final TokensService tokensService;
 
-    private final UserService userService ;
+    // private final UsersFormDto usersFormDto ;
+    // private final PasswordEncoder passwordEncoder;
 
     // 회원가입
     @PostMapping(value = "/new")
@@ -34,13 +35,12 @@ public class UserController {
         return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
 
-    //중복회원 확인
+    // 중복회원 확인
     @PostMapping(value = "/check-duplicate")
     public ResponseEntity<Boolean> duplicateButton(@Valid @RequestBody UsersFormDto usersFormDto) {
-        
-        boolean flag = userService.checkDuplicate(usersFormDto.getUser_email()) ;
+
+        boolean flag = userService.checkDuplicate(usersFormDto.getUser_email());
         System.out.println("flag : " + flag);
-        return new ResponseEntity<>(flag, HttpStatus.OK) ;
+        return new ResponseEntity<>(flag, HttpStatus.OK);
     }
 }
-
