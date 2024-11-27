@@ -123,7 +123,8 @@ public class Controller {
     @GetMapping("/foodImages")
     public ResponseEntity<Map<Integer, String>> getFoodImagesByPostIds(
             @RequestParam(name = "postIds") List<Integer> postIds) {
-        return ResponseEntity.ok(postService.getFirstFoodImagesByPostIds(postIds));
+        Map<Integer, String> map = postService.getFirstFoodImagesByPostIds(postIds);
+        return ResponseEntity.ok(map);
     }
 
     @GetMapping("/posts/dailyViews")

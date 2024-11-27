@@ -45,6 +45,9 @@ public class PostResponseMapDTO {
     @Column(name = "weather")
     private String weather;
 
+    @Column(name = "theme_diary_img")
+    private String themeDiaryImg;
+
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private RestaurantMapEntity restaurant;

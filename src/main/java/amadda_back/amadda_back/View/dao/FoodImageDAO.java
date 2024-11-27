@@ -15,7 +15,7 @@ public interface FoodImageDAO extends JpaRepository<FoodImageEntity, Integer> {
     @Query("SELECT f.foodImageUrl FROM FoodImageEntity f WHERE f.post.postId = :postId")
     List<String> findFirstFoodImageUrlByPostId(@Param("postId") Integer postId);
 
-    @Query("SELECT f.foodImageUrl FROM FoodImageEntity f WHERE f.post.postId IN :postIds")
-    List<String> findFoodImagesByPostIds(@Param("postIds") List<Integer> postIds);
+    @Query("SELECT f.post.postId, f.foodImageUrl FROM FoodImageEntity f WHERE f.post.postId IN :postIds AND f.foodImageId IN (SELECT MIN(f2.foodImageId) FROM FoodImageEntity f2 WHERE f2.post.postId = f.post.postId)")
+    List<Object[]> findFirstFoodImagesByPostIds(@Param("postIds") List<Integer> postIds);
 
 }
