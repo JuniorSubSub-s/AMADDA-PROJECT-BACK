@@ -98,11 +98,13 @@ public class PostService {
     }
 
     public Map<Integer, String> getFirstFoodImagesByPostIds(List<Integer> postIds) {
-        List<String> imageUrls = foodImageDAO.findFoodImagesByPostIds(postIds);
+        List<Object[]> results = foodImageDAO.findFirstFoodImagesByPostIds(postIds);
         Map<Integer, String> postImageMap = new HashMap<>();
 
-        for (int i = 0; i < postIds.size(); i++) {
-            postImageMap.put(postIds.get(i), imageUrls.size() > i ? imageUrls.get(i) : "Image not found");
+        for (Object[] result : results) {
+            Integer postId = (Integer) result[0];
+            String imageUrl = (String) result[1];
+            postImageMap.put(postId, imageUrl);
         }
 
         return postImageMap;
