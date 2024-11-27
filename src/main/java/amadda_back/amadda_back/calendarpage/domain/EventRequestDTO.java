@@ -13,6 +13,4 @@ public class EventRequestDTO {
     private String color ;
     private String address ;
     private Boolean holiday;  // holiday 필드 추가
-
-
 }
