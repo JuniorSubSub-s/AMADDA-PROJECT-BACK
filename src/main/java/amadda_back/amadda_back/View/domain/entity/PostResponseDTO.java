@@ -20,6 +20,7 @@ public class PostResponseDTO {
     private RestaurantEntity restaurant;
     private UserEntity user;
     private ThemeEntity theme;
+    private String themeDiaryImg;
 
     // PostEntity로부터 PostResponseDTO를 생성하는 생성자 추가
     public PostResponseDTO(PostEntity entity) {
@@ -36,6 +37,7 @@ public class PostResponseDTO {
         this.restaurant = entity.getRestaurant();
         this.user = entity.getUser();
         this.theme = entity.getTheme();
+        this.themeDiaryImg = entity.getThemeDiaryImg();
     }
 
     // PostEntity의 Privacy 값을 PostResponseDTO의 Privacy 값으로 변환
