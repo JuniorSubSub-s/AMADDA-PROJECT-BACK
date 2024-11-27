@@ -1,10 +1,7 @@
 package amadda_back.amadda_back.mypage.ctrl;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +18,7 @@ import amadda_back.amadda_back.mypage.domain.entity.Badge;
 import amadda_back.amadda_back.mypage.domain.entity.UserInfoDTO;
 import amadda_back.amadda_back.mypage.exception.ResourceNotFoundException;
 import amadda_back.amadda_back.mypage.service.UserService;
+
 @RestController
 @RequestMapping("/api/amadda/user")
 public class UserController {

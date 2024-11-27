@@ -52,6 +52,9 @@ public class PostEntity {
     @Column(name = "daily_views")
     private Integer dailyViews = 0;
 
+    @Column(name = "theme_diary_img")
+    private String themeDiaryImg;
+
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;

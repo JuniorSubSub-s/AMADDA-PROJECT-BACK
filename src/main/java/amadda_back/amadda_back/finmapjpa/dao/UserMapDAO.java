@@ -16,14 +16,5 @@ import amadda_back.amadda_back.finmapjpa.domain.entity.UserRequestMapDTO;
 @Repository
 public interface UserMapDAO extends JpaRepository<UserRequestMapDTO, Integer> {
 
-    @Transactional
-    @Modifying
-    @Query(value = "INSERT INTO user (user_name, user_password, user_email, user_nickname, user_phonenumber, user_gender) "
-            + "VALUES (:userName, :userPassword, :userEmail, :userNickname, :userPhonenumber, :userGender)", nativeQuery = true)
-    void insertUser(@Param("userName") String userName,
-            @Param("userPassword") String userPassword,
-            @Param("userEmail") String userEmail,
-            @Param("userNickname") String userNickname,
-            @Param("userPhonenumber") String userPhonenumber,
-            @Param("userGender") String userGender);
+   
 }
