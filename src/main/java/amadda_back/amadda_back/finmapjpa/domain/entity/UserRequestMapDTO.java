@@ -41,9 +41,6 @@ public class UserRequestMapDTO {
     @Column(name = "user_phonenumber")
     private String userPhoneNumber;
 
-    @Column(name = "profile_image")
-    private String profileImage;
-
     @Column(name = "user_createat")
     private LocalDateTime userCreateAt = LocalDateTime.now();
 

@@ -17,8 +17,8 @@ public class ModalBadgeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "badge_id")
-    private Integer badgeId;
+    @Column(name = "badge_id")  // 물리적 컬럼명 'badge_id'를 명시적으로 설정
+    private Integer badgeId;  // 논리적 컬럼명 'badgeId'
 
     @Column(name = "badge_name")
     private String badgeName;
