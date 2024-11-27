@@ -50,5 +50,6 @@ public class UserRequestMapDTO {
     @Column(name = "user_currency_balance")
     private Integer userCurrencyBalance = 0;
 
-
+    @Column(name = "profile_image")
+    private String profileImage;
 }
