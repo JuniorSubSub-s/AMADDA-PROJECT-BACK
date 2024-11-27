@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import amadda_back.amadda_back.View.dao.FoodImageDAO;
@@ -183,23 +181,27 @@ public class PostService {
     }
 
     // 레스토랑 중복 검사 후 추가 또는 기존 레스토랑 반환
-    public RestaurantEntity addRestaurantIfNotExists(String restaurantName, String restaurantAddress, Double locationLatitude, Double locationLongitude) {
+    public RestaurantEntity addRestaurantIfNotExists(String restaurantName, String restaurantAddress,
+            Double locationLatitude, Double locationLongitude) {
         // 중복 레스토랑 확인
-        Optional<RestaurantEntity> existingRestaurant = restaurantDAO.findByRestaurantNameAndRestaurantAddress(restaurantName, restaurantAddress);
+        Optional<RestaurantEntity> existingRestaurant = restaurantDAO
+                .findByRestaurantNameAndRestaurantAddress(restaurantName, restaurantAddress);
 
         if (existingRestaurant.isPresent()) {
             // 중복이 있을 경우 기존 레스토랑 반환
             return existingRestaurant.get();
         } else {
             // 중복이 없을 경우 새로운 레스토랑 저장 후 반환
-            RestaurantEntity newRestaurant = new RestaurantEntity(restaurantName, restaurantAddress, locationLatitude, locationLongitude);
+            RestaurantEntity newRestaurant = new RestaurantEntity(restaurantName, restaurantAddress, locationLatitude,
+                    locationLongitude);
             return restaurantDAO.save(newRestaurant);
         }
     }
 
     // 게시물 저장
     public PostEntity savePost(String title, String content, String privacy, String foodCategory, String mood,
-            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId, String themeDiaryImg) {
+            String weather, Boolean receiptVerification, Integer restaurantId, Integer userId, Integer themeId,
+            String themeDiaryImg) {
         PostEntity post = new PostEntity();
         post.setPostTitle(title);
         post.setPostContent(content);

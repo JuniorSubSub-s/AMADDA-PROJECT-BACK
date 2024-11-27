@@ -2,8 +2,12 @@ package amadda_back.amadda_back.mypage.domain.entity;
 
 import java.time.LocalDate;
 
-import amadda_back.amadda_back.View.domain.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import amadda_back.amadda_back.View.domain.entity.UserEntity;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class UserInfoDTO {
 
     private Integer userId;
@@ -158,10 +162,12 @@ public class UserInfoDTO {
     
     // 내부 클래스 Gender 및 Subscription 정의
     public enum Gender {
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         M, F
     }
 
     public enum Subscription {
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
         Y, N
     }
 }

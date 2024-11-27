@@ -63,7 +63,7 @@ public class Controller {
 
     // 포스트 삭제 처리
     @DeleteMapping("/posts/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Integer postId) {
+    public ResponseEntity<String> deletePost(@PathVariable(name = "postId") Integer postId) {
         boolean deleted = postService.deletePost(postId);
         if (deleted) {
             return ResponseEntity.ok("게시물이 성공적으로 삭제되었습니다."); // 200 상태 코드
@@ -191,7 +191,8 @@ public class Controller {
             List<String> tags = (List<String>) postData.get("tag");
 
             // 포스트 저장
-            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather, receiptVerification, restaurantId, userId, themeId, themeDiaryImg);
+            PostEntity savedPost = postService.savePost(title, content, privacy, foodCategory, mood, weather,
+                    receiptVerification, restaurantId, userId, themeId, themeDiaryImg);
 
             // 주제 저장
             if (topics != null && !topics.isEmpty()) {

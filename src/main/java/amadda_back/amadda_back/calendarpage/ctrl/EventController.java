@@ -60,6 +60,7 @@ public class EventController {
         Map<String, String> map = new HashMap<>();
         map.put("id", dateId);
         map.put("userId", userId); // 유저 아이디 추가
+
         List<EventResponseDTO> list = eventService.findlist(map);
         System.out.println("client list data : " + list);
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -106,29 +107,35 @@ public class EventController {
     // 유저의 오래된 이벤트 4개를 가져오는 API
     @GetMapping("/alarmData/{userId}")
     public ResponseEntity<Object> getUserAlarmData(
-            @PathVariable Integer userId,
-            @RequestParam(defaultValue = "0") Integer offset) {  // offset 파라미터 추가
-        System.out.println("데이터 불러오기 중...");
-        
-        Map<String, Integer> map = new HashMap<>();
-        map.put("id", userId);
-        map.put("offset", offset);  // offset 값을 map에 추가하여 MyBatis 쿼리로 전달
-        
-        List<EventResponseDTO> result = eventService.getOldestUserEvents(map);
-        System.out.println("가져온 알람 데이터 4개: " + result);
-        
-        return new ResponseEntity<>(result, HttpStatus.OK);
+            @PathVariable("userId") Integer userId,
+            @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
+        try {
+            Map<String, Integer> map = new HashMap<>();
+            map.put("id", userId);
+            map.put("offset", offset);
+
+            System.out.println("map : " + map);
+
+            List<EventResponseDTO> result = eventService.getOldestUserEvents(map);
+
+            if (result == null || result.isEmpty()) {
+                return new ResponseEntity<>("알람 데이터가 없습니다.", HttpStatus.NO_CONTENT);
+            }
+
+            System.out.println("가져온 알람 데이터 4개: " + result);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace(); // 예외 발생 원인 출력
+            return new ResponseEntity<>("서버 내부 오류 발생.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/post")
     public List<GetPostEntity> getPostsByUserIdAndDateRange(@RequestParam("userId") String userId,
-                                                            @RequestParam("startDate") LocalDate startDate,
-                                                            @RequestParam("endDate") LocalDate endDate) {
-        System.out.println("아이디" + userId+ "시작 날짜" + startDate+ "끝 날짜" + endDate);
+            @RequestParam("startDate") LocalDate startDate,
+            @RequestParam("endDate") LocalDate endDate) {
+        System.out.println("아이디" + userId + "시작 날짜" + startDate + "끝 날짜" + endDate);
         return eventService.findPostsByUserIdAndDateRange(userId, startDate, endDate);
     }
 
-    
-    
-    
 }
