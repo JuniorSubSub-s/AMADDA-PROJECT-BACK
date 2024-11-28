@@ -73,8 +73,8 @@ AMADDA utilizes a robust full-stack architecture that ensures seamless performan
 - Managed via **GitHub** with clear branching (main, develop, feature) for teamwork.
 - Supported by **Postman** for API testing and **Notion** for documentation.
 
-![Tech Stack](./images/AMADDA_기술스텍.png)
-![System Architecture](./images/AMADDA_System_Architecture.png)
+![AMADDA 기술스텍](https://github.com/user-attachments/assets/d52c1d79-1b46-46dd-b6fe-2d294540492f)
+![AMADDA_System_Architecture](https://github.com/user-attachments/assets/949845d3-651e-495b-9517-bf81dfd6329c)
 
 ---
 
