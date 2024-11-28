@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="amadda_back.amadda_back.calendarpage.dao.EventMapper">
+
+
+    <!-- insertRow --> 
+
+    <insert id="insertRow"
+            parameterType="amadda_back.amadda_back.calendarpage.domain.EventRequestDTO">
+        INSERT INTO calendar(user_id, day, title, content, color, address) 
+        VALUES( #{userId}, #{day}, #{title}, #{content}, #{color}, #{address})
+    </insert>     
+
+    <!-- findAllRow --> 
+    <select id="findAllRow"
+            parameterType="java.util.HashMap"
+            resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
+        SELECT cal_id, day, title, content, color, address
+        FROM calendar 
+        WHERE (user_id = #{userId} OR holiday = 1)
+        AND day LIKE CONCAT(#{currentYearMonth}, '%')
+    </select>
+
+
+    <!-- findlist --> 
+
+    <select id="findlist"
+            parameterType="java.util.HashMap"
+            resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
+        SELECT cal_id, day, title, content, color, address
+        FROM   calendar    
+        WHERE  (user_id = #{userId} OR holiday = 1) AND day = #{ id }
+    </select>
+
+    <!-- findRow --> 
+
+    <select id="findRow"
+            parameterType="java.util.HashMap"
+            resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
+        SELECT cal_id, day, title, content, color, address
+        FROM   calendar    
+        WHERE  cal_id = #{ id }    
+    </select>    
+
+    <!-- deleteRow --> 
+
+    <delete id="deleteRow"
+            parameterType="java.util.HashMap">
+        DELETE FROM calendar
+        WHERE       cal_id = #{ id }
+    </delete>
+
+    <!-- updateRow --> 
+
+    <update id="updateRow"
+            parameterType="amadda_back.amadda_back.calendarpage.domain.EventRequestDTO">
+        UPDATE calendar
+        SET    title = #{ title }, content = #{ content }, color = #{ color }, address = #{ address }
+        WHERE  cal_id    = #{ calId }
+    </update>
+
+    <!-- savehistoryAll --> 
+
+    <insert id="savehistoryAll" 
+            parameterType="java.util.List">
+        INSERT INTO calendar (day, title, color, holiday)
+        <foreach collection="list" item="item" separator=" UNION ALL ">
+            SELECT #{item.locdate}, #{item.dateName}, 'orange', '1'
+            FROM DUAL
+            WHERE NOT EXISTS (
+                SELECT 1 FROM calendar 
+                WHERE day = #{item.locdate} AND title = #{item.dateName}
+            )
+        </foreach>
+    </insert>
+
+
+
+
+    <!-- getOldestUserEvents --> 
+
+    <select id="getOldestUserEvents"
+            parameterType="java.util.HashMap"
+            resultType="amadda_back.amadda_back.calendarpage.domain.EventResponseDTO">
+        SELECT cal_id, user_id, day, title, content, color, address
+        FROM calendar 
+        WHERE user_id = #{id}
+        ORDER BY day ASC
+
+    </select>    
+    </mapper>
