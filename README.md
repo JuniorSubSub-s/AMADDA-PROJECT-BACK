@@ -95,3 +95,15 @@ AMADDA utilizes a robust full-stack architecture that ensures seamless performan
 
 ## **Contact & Support**
 For questions, suggestions, or contributions, please feel free to contact us through our repositories.
+
+![AMADDAMAIN2](https://github.com/user-attachments/assets/c328897d-f05b-425e-a62b-b553f966d953)
+![AMADDAMAIN](https://github.com/user-attachments/assets/b62b4c34-ca5e-4474-88d1-6901cb4d8ccb)
+
+![AMADDAPOSTWRITE](https://github.com/user-attachments/assets/ab65007f-0362-457b-a708-3cd3caa5b88e)
+
+![AMADDADIARYMAP](https://github.com/user-attachments/assets/aed36650-ff87-4c43-bfa9-0b571a72f37e)
+![AMADDADIARYPAGE](https://github.com/user-attachments/assets/86659d3a-db15-488b-9af2-13c9e63a8688)
+
+![AMADDADIARYWEATHER3](https://github.com/user-attachments/assets/2715f954-c4ea-4605-8666-2bbf724fbc05)
+![AMADDADIARYWEATHER2](https://github.com/user-attachments/assets/61f19ffb-5a08-4530-8e0c-45413b8b74a0)
+![AMADDADIARYWEATHER](https://github.com/user-attachments/assets/c2abb0a5-2661-46aa-aa87-1ab86c04a5e7)
